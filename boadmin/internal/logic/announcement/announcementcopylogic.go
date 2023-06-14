@@ -36,7 +36,7 @@ func (l *AnnouncementCopyLogic) AnnouncementCopy(req *types.AnnouncementCopyRequ
 
 	err = l.svcCtx.MyDB.Transaction(func(db *gorm.DB) (err error) {
 
-		// 複製主表
+		// 複製主表2
 		announcement.ID = 0
 		announcement.Status = "1"
 		announcementX := &types.AnnouncementX{
