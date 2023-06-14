@@ -1,0 +1,76 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+
+type ChannelReportQueryRequest {
+    PayType string `json:"payType,optional"`
+    ReportType string `json:"reportType,optional"`
+    ChannelCode string `json:"channelCode,optional"`
+    ChannelName string `json:"channelName,optional"`
+    PayTypeCode string `json:"payTypeCode,optional"`
+    StartAt string `json:"startAt",valiate: "required"`
+    EndAt string `json:"endAt",valiate: "required"`
+    TransactionType string `json:"transactionType",valiate: "required"` //全部/內充/代付/支付/下發
+    CurrencyCode string `json:"currencyCode,valiate: "required"`
+    PageNum int `json:"pageNum,optional" gorm:"-"`                      //gorm:"-" 忽略這參數檢查是否有給
+    PageSize int `json:"pageSize,optional" gorm:"-"`
+}
+
+type InternalChannelReport {
+    Date string `json:"date"`
+    ChannelCode string `json:"channelCode"`
+    ChannelName string `json:"channelName"`
+    TransactionType string `json:"transactionType"`
+    PayTypeCode string `json:"payTypeCode"`
+    PayTypeName string `json:"payTypeName"`
+    OrderAmount float64 `json:"orderAmount"`
+    OrderQuantity float64 `json:"orderQuantity"`
+    SuccessAmount float64 `json:"successAmount"`
+    SuccessQuantity float64 `json:"successQuantity"`
+    SuccessRate float64 `json:"successRate"`
+    Fee float64 `json:"channelRate"`         //渠道費率
+    HandlingFee float64 `json:"handlingFee"` //渠道手續費
+    SystemCost float64 `json:"systemCost"`
+    SystemProfit float64 `json:"systemProfit"`
+    CurrencyCode string `json:"currencyCode"`
+}
+
+type ChannelReportQueryresponse {
+    List [] InternalChannelReport `json:"list" gorm:"-"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount" gorm:"-"`
+}
+
+type ChannelReportTotalResponse {
+    TotalCost float64 `json:"totalCost"`
+    TotalProfit float64 `json:"totalProfit"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalOrderQuantity float64 `json:"totalOrderQuantity"`
+    TotalSuccessAmount float64 `json:"totalSuccessAmount"`
+    TotalSuccessQuantity float64 `json:"totalSuccessQuantity"`
+    TotalSuccessRate float64 `json:"totalSuccessRate"`
+}
+
+@server(
+    jwt: Auth
+    group: report
+    prefix: api/v1/report
+)
+service boadmin-api {
+    @handler ChannelReportQueryHandler
+    post /channelreport/query (ChannelReportQueryRequest) returns (ChannelReportQueryresponse)
+
+    @handler ChannelReportTotalHandler
+    post /channelreport/total (ChannelReportQueryRequest) returns (ChannelReportTotalResponse)
+
+    @handler ChannelReportQueryExcelHandler
+    post /channelreport/excel (ChannelReportQueryRequest) returns ()
+}

@@ -1,0 +1,340 @@
+syntax = "v1"
+
+info(
+    title: "商戶"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type Merchant {
+    ID int64 `json:"id, optional"`
+    Code string `json:"code, optional"`
+    AccountName  string `json:"accountName, optional"`
+    AgentLayerCode string `json:"agentLayerCode, optional"`
+    AgentParentCode string `json:"agentParentCode, optional"`
+    ScrectKey string `json:"-, optional"`
+    AccessToken string `json:"-, optional"`
+    Status string `json:"status, optional"`
+    AgentStatus string `json:"agentStatus, optional"`
+    Contact MerchantContact `json:"contact, optional"`
+    BizInfo MerchantBizInfo `json:"bizInfo, optional"`
+    BoIP string `json:"boIp, optional"`
+    ApiIP string `json:"apiIp, optional"`
+    IsWithdraw string `json:"isWithdraw, optional"`
+    WithdrawPassword string `json:"-, optional"`
+    LoginValidatedType string `json:"loginValidatedType, optional"`
+    PayingValidatedType string `json:"payingValidatedType, optional"`
+    ApiCodeType string `json:"apiCodeType, optional"`
+    BillLadingType string `json:"billLadingType, optional"`
+    Lang string `json:"lang, optional"`
+    RegisteredAt int64 `json:"registeredAt, optional"`
+    RegisteredAtS string `json:"registeredAtS, optional" gorm:"-"`
+    RateCheck string `json:"rateCheck, optional"`
+    UnpaidNotifyInterval int64 `json:"unpaidNotifyInterval, optional"`
+    UnpaidNotifyNum int64 `json:"unpaidNotifyNum, optional"`
+    MerchantBalances []MerchantBalance `json:"merchantBalances, optional" gorm:"foreignKey:MerchantCode;references:Code"`
+    Users []User `json:"users, optional, optional" gorm:"many2many:au_user_merchants;foreignKey:code;joinForeignKey:merchant_code;references:account;joinReferences:user_account;"`
+    MerchantCurrencies []MerchantCurrency `json:"merchantCurrencies, optional" gorm:"foreignKey:MerchantCode;references:Code"`
+}
+
+type MerchantContact {
+    Phone string `json:"phone, optional"`
+    Email string `json:"email, optional"`
+    CommunicationSoftware string `json:"communicationSoftware, optional"`
+    CommunicationNickname string `json:"communicationNickname, optional"`
+    GroupName string `json:"groupName, optional"`
+    GroupID string `json:"groupId, optional"`
+}
+
+type MerchantBizInfo {
+    CompanyName string `json:"companyName, optional"`
+    OperatingWebsite string `json:"operatingWebsite, optional"`
+    TestAccount string `json:"testAccount, optional"`
+    TestPassword string `json:"testPassword, optional"`
+    Remark string `json:"remark, optional"`
+}
+
+// 新增
+type MerchantCreateRequest {
+    Account string `json:"account" gorm:"-"`
+    Code string `json:"code, optional"`
+    AccountName  string `json:"accountName, optional"`
+    AgentLayerCode string `json:"agentLayerCode, optional"`
+    AgentParentCode string `json:"agentParentCode, optional"`
+    ScrectKey string `json:"screctKey, optional"`
+    AccessToken string `json:"accessToken, optional"`
+    Status string `json:"status, optional"`
+    AgentStatus string `json:"agentStatus, optional"`
+    Contact MerchantContact `json:"contact"`
+    BizInfo MerchantBizInfo `json:"bizInfo, optional"`
+    BoIP string `json:"boIp, optional"`
+    ApiIP string `json:"apiIp, optional"`
+    IsWithdraw string `json:"isWithdraw, optional"`
+    WithdrawPassword string `json:"withdrawPassword, optional"`
+    LoginValidatedType string `json:"loginValidatedType, optional"`
+    PayingValidatedType string `json:"payingValidatedType, optional"`
+    ApiCodeType string `json:"apiCodeType, optional"`
+    BillLadingType string `json:"billLadingType, optional"`
+    Lang string `json:"lang, optional"`
+    RegisteredAt int64 `json:"registeredAt, optional"`
+    RateCheck string `json:"rateCheck, optional"`
+    UnpaidNotifyInterval int64 `json:"unpaidNotifyInterval, optional"`
+    UnpaidNotifyNum int64 `json:"unpaidNotifyNum, optional"`
+    Users []User `json:"users, optional" gorm:"many2many:au_user_merchants;foreignKey:code;joinForeignKey:merchant_code;references:account;joinReferences:user_account;"`
+    MerchantCurrencies []MerchantCurrency `json:"merchantCurrencies, optional" gorm:"foreignKey:MerchantCode;references:Code"`}
+
+// 修改
+type MerchantUpdateRequest {
+    Code string `json:"code, optional"`
+    AgentLayerCode string `json:"agentLayerCode, optional"`
+    AgentParentCode string `json:"agentParentCode, optional"`
+    ScrectKey string `json:"screctKey, optional"`
+    AccessToken string `json:"accessToken, optional"`
+    Status string `json:"status, optional"`
+    AgentStatus string `json:"agentStatus, optional"`
+    Contact MerchantContact `json:"contact, optional"`
+    BizInfo MerchantBizInfo `json:"bizInfo, optional"`
+    BoIP string `json:"boIp, optional"`
+    ApiIP string `json:"apiIp, optional"`
+    IsWithdraw string `json:"isWithdraw, optional"`
+    WithdrawPassword string `json:"withdrawPassword, optional"`
+    LoginValidatedType string `json:"loginValidatedType, optional"`
+    PayingValidatedType string `json:"payingValidatedType, optional"`
+    ApiCodeType string `json:"apiCodeType, optional"`
+    BillLadingType string `json:"billLadingType, optional"`
+    Lang string `json:"lang, optional"`
+    RegisteredAt int64 `json:"registeredAt, optional"`
+    RateCheck string `json:"rateCheck, optional"`
+}
+
+type  MerchantUpdateParamsRequest {
+    Code string `json:"code, optional"`
+    UnpaidNotifyInterval int64 `json:"unpaidNotifyInterval, optional"`
+    UnpaidNotifyNum int64 `json:"unpaidNotifyNum, optional"`
+}
+
+// 刪除
+type MerchantDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+// 查詢
+type MerchantQueryRequest {
+    code string `json:"code"`
+}
+
+type MerchantQueryResponse {
+    Merchant
+}
+
+// 分頁查詢
+type MerchantQueryAllRequest {
+    Code string `json:"code, optional"`
+    AccountName  string `json:"accountName, optional"`
+    AgentLayerCode string `json:"agentLayerCode, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantQueryAllResponse {
+    List []Merchant `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+// 商戶列表view
+type MerchantListView {
+    ID int64 `json:"id, optional"`
+    Code string `json:"code, optional"`
+    AgentLayerCode string `json:"agentLayerCode, optional"`
+    AccountName  string `json:"accountName, optional"`
+    Status string `json:"status, optional"`
+    CreatedAt string `json:"createdAt, optional"`
+    AgentStatus string `json:"agentStatus, optional"`
+    CurrencyCode string `json:"currencyCode, optional" validate:"required"`
+    XfBalance float64 `json:"xfBalance, optional"`
+    DfBalance float64 `json:"dfBalance, optional"`
+    TotalBalance float64 `json:"totalBalance, optional"`
+    FrozenAmount float64 `json:"frozenAmount, optional"`
+    Commission float64 `json:"commission, optional"`
+    WithdrawHandlingFee float64 `json:"withdrawHandlingFee, optional"`
+    MinWithdrawCharge float64 `json:"minWithdrawCharge"`
+    MaxWithdrawCharge float64 `json:"maxWithdrawCharge"`
+    Contact MerchantContact `json:"contact, optional"`
+    BizInfo MerchantBizInfo `json:"bizInfo, optional"`
+}
+
+// 商戶列表view分頁查詢
+type MerchantQueryListViewRequest {
+    Code string `json:"code, optional"`
+    JwtMerchantCode string `json:"jwtMerchantCode, optional"`
+    AccountName  string `json:"accountName, optional"`
+    AgentLayerCode string `json:"agentLayerCode, optional"`
+    BalanceCurrencyCode string `json:"balanceCurrencyCode, optional"`
+    Currencies []string `json:"currencies, optional"`
+    UserID int64 `json:"userId, optional"`
+    MerchantCurrenciesStatus string `json:"merchantCurrenciesStatus, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantQueryListViewResponse {
+    List []MerchantListView `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type MerchantPtBalanceListResponse {
+    List []MerchantPtBalance `json:"list"`
+}
+
+type MerchantQueryListViewTotalResponse {
+    XfBalanceTotal float64 `json:"xfBalanceTotal, optional"`
+    DfBalanceTotal float64 `json:"dfBalanceTotal, optional"`
+    BalanceTotal float64 `json:"balanceTotal, optional"`
+    FrozenAmountTotal float64 `json:"frozenAmountTotal, optional"`
+    CommissionTotal float64 `json:"commissionTotal, optional"`
+}
+
+type MerchantQueryDistinctCode {
+    CurrencyCode string `json:"currencyCode, optional"`
+    Status string `json:"status, optional"`
+    AgentStatus  string `json:"agentStatus, optional"`
+}
+
+type MerchantUpdateStatusRequest {
+    Code string `json:"code, optional"`
+    Status string `json:"status"`
+}
+
+type MerchantUpdateAgentStatusRequest {
+    Code string `json:"code, optional"`
+    AgentStatus string `json:"agentStatus"`
+}
+
+type MerchantUpdateBillLadingTypeRequest {
+    Code string `json:"code, optional"`
+    BillLadingType string `json:"billLadingType"`
+}
+
+type MerchantUpdateRateCheckRequest {
+    Code string `json:"code, optional"`
+    RateCheck string `json:"rateCheck"`
+}
+
+type MerchantResetPasswordRequest {
+    Name string `json:"name"`
+}
+
+type MerchantResetScrectKeyRequest {
+    Code string `json:"code"`
+}
+
+type MerchantGetScrectKeyRequest {
+    Code string `json:"code"`
+}
+type MerchantGetScrectKeyResponse {
+    ScrectKey string `json:"screctKey"`
+}
+
+
+type MerchantTransferParentAgentRequest {
+    Code string `json:"code"`
+    AgentParentCode string `json:"agentParentCode"`
+}
+
+type UpdateWithdrawPasswordRequest {
+    WithdrawPassword string `json:"withdrawPassword" validate:"required,alphanumLength=8/16"`
+}
+
+type ResetWithdrawPasswordRequest {
+    ID int64 `json:"id"`
+}
+
+type GetDescendantAgentsRequest {
+    isIncludeItself bool `json:"isIncludeItself, optional"`
+}
+
+
+@server(
+    jwt: Auth
+    group: merchant
+    prefix: api/v1/merchant
+)
+service boadmin-api {
+    @handler MerchantCreateHandler
+    post /merchant/create (MerchantCreateRequest)
+
+    @handler MerchantUpdateHandler
+    post /merchant/update (MerchantUpdateRequest)
+
+    @handler MerchantDeleteHandler
+    post /merchant/delete (MerchantDeleteRequest)
+
+    @handler MerchantQueryHandler
+    post /merchant/query (MerchantQueryRequest) returns (MerchantQueryResponse)
+
+    @handler MerchantQueryAllHandler
+    post /merchant/query_all (MerchantQueryAllRequest) returns (MerchantQueryAllRequest)
+
+    @handler MerchantQueryListViewHandler
+    post /merchant/query_list_view (MerchantQueryListViewRequest) returns (MerchantQueryListViewResponse)
+
+    @handler MerchantQueryListViewTotalHandler
+    post /merchant/query_list_view_total (MerchantQueryListViewRequest) returns (MerchantQueryListViewTotalResponse)
+
+    @handler MerchantExportListViewExcelHandler
+    post /merchant/export_list_view_excel (MerchantQueryListViewRequest) returns (MerchantQueryListViewResponse)
+
+    @handler MerchantQueryUserBalanceHandler
+    post /merchant/query_user_balance () returns (MerchantQueryListViewResponse)
+
+    @handler MerchantQueryUserPtBalanceHandler
+    post /merchant/query_user_pt_balance () returns (MerchantPtBalanceListResponse)
+
+    @handler MerchantQueryDistinctCodeHandler
+    post /merchant/query_distinct_code (MerchantQueryDistinctCode) returns ([]string)
+
+    @handler MerchantUpdateStatusHandler
+    post /merchant/update_status (MerchantUpdateStatusRequest)
+
+    @handler MerchantUpdateAgentStatusHandler
+    post /merchant/update_agent_status (MerchantUpdateAgentStatusRequest)
+
+    @handler MerchantUpdateBillLadingTypeHandler
+    post /merchant/update_bill_lading_type (MerchantUpdateBillLadingTypeRequest)
+
+    @handler MerchantUpdateRateCheckHandler
+    post /merchant/update_rate_check (MerchantUpdateRateCheckRequest)
+
+    @handler MerchantResetPasswordHandler
+    post /merchant/reset_password (MerchantResetPasswordRequest)
+
+    @handler MerchantResetScrectKeyHandler
+    post /merchant/reset_screct_key (MerchantResetScrectKeyRequest)
+
+    @handler MerchantGetScrectKeyHandler
+    post /merchant/get_screct_key (MerchantGetScrectKeyRequest) returns (MerchantGetScrectKeyResponse)
+
+    @handler MerchantTransferParentAgentHandler
+    post /merchant/transfer_parent_agent (MerchantTransferParentAgentRequest)
+
+    @handler MerchantResetWithdrawPasswordHandler
+    post /merchant/reset_withdraw_password (ResetWithdrawPasswordRequest)
+
+    @handler MerchantUpdateWithdrawPasswordHandler
+    post /merchant/update_withdraw_password (UpdateWithdrawPasswordRequest)
+
+    @handler MerchantUpdateParamsRequestHandler
+    post /merchant/update_params (MerchantUpdateParamsRequest)
+
+    @handler MerchantGetSubAgentsHandler
+    post /merchant/GetSubAgents returns ([]Merchant)
+
+    @handler MerchantGetDescendantAgentsHandler
+    post /merchant/GetDescendantAgents (GetDescendantAgentsRequest) returns ([]Merchant)
+}

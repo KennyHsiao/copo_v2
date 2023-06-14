@@ -1,0 +1,505 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type Order {
+    ID int64 `json:"id"`
+    Type string `json:"type"`                                        //收支方式  (代付 DF 支付 ZF 下發 XF 內充 NC)
+    MerchantCode string `json:"merchantCode, optional"`              //optional 是因为拨款代付提单，没有merchantCode
+    TransAt string `json:"transAt"`
+    OrderNo string `json:"orderNo"`
+    BalanceType string `json:"balanceType"`
+    BeforeBalance float64 `json:"beforeBalance"`
+    TransferAmount float64 `json:"transferAmount"`
+    Balance float64 `json:"balance"`
+    FrozenAmount float64 `json:"frozenAmount"`
+    Status string `json:"status"`                                    //訂單狀態(0:待處理 1:處理中 20:成功 30:失敗 31:凍結)
+    RepaymentStatus string `json:"repaymentStatus"`                  //还款状态：(0：不需还款、1:待还款、2：还款成功、3：还款失败)
+    isLock string `json:"isLock"`
+    IsTest string `json:"isTest"`
+    Memo string `json:"memo"`
+    ErrorType string `json:"errorType, optional"`
+    ErrorNote string `json:"errorNote, optional"`
+    ChannelCode string `json:"channelCode"`
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    Fee float64 `json:"fee"`
+    HandlingFee float64 `json:"handlingFee"`
+    InternalChargeOrderPath string `json:"internalChargeOrderPath"`
+    CurrencyCode string `json:"currencyCode"`
+    MerchantBankAccount string `json:"merchantBankAccount"`          //商戶銀行帳號
+    MerchantBankNo string `json:"merchantBankNo"`                    //商戶銀行代碼
+    MerchantBankName string `json:"merchantBankName"`                //商戶姓名
+    MerchantBankProvince string `json:"merchantBankProvince"`        //商戶開戶縣市名
+    MerchantBankCity string `json:"merchantBankCity"`                //商戶開戶縣市名
+    MerchantAccountName string `json:"merchantAccountName"`          //開戶行名(代付、下發)
+    ChannelBankAccount string `json:"channelBankAccount"`            //渠道銀行帳號
+    ChannelBankNo string `json:"channelBankNo"`                      //渠道銀行代碼
+    ChannelBankName string `json:"channelBankName"`                  //渠道银行名称
+    ChannelAccountName string `json:"channelAccountName"`            //渠道账户姓名
+    OrderAmount float64 `json:"orderAmount"`                         // 订单金额
+    ActualAmount float64 `json:"actualAmount"`                       // 实际金额
+    TransferHandlingFee float64 `json:"transferHandlingFee"`
+    MerchantOrderNo string `json:"merchantOrderNo,optional"`         //商戶訂單編號 ，optional 是因为拨款代付提单，没有merchantCode
+    ChannelOrderNo string `json:"channelOrderNo"`                    //渠道订单编号
+    Source string `json:"source"`                                    //1:平台 2:API
+    SourceOrderNo string `json:"sourceOrderNo"`                      //來源訂單編號(From NC)
+    ReasonType string `json:"reasonType"`                            //原因類型(1=(補單)修改金額/2=(補單)重複支付/3=(補單)其它/11=追回)
+    IsCalculateProfit string `json:"is_calculate_profit"`            //已記算傭金利潤(0=否,1=是)
+    CallBackStatus string `json:"callBackStatus, optional"`
+    NotifyUrl string `json:"notifyUrl, optional"`
+    PageUrl string `json:"pageUrl, optional"`
+    PersonProcessStatus string `json:"personProcessStatus, optional"`//人工处理状态：(0:待處理1:處理中2:成功3:失敗 10:不需处理)
+    IsMerchantCallback string `json:"isMerchantCallback, optional"`  //是否已经回调商户(0：否、1:是、2:不需回调)(透过API需提供的资讯)
+    CreatedBy string `json:"createdBy, optional"`
+    UpdatedBy string `json:"updatedBy, optional"`
+    ReviewedBy string `json:"reviewedBy, optional"`
+    ChangeType string `json:"changeType, optional"`
+}
+
+type InternalChargeOrder {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    OrderNo string `json:"orderNo"`
+    MerchantAccountName string `json:"merchantAccountName"`
+    ChannelAccountName string `json:"channelAccountName"`
+    CurrencyCode string `json:"currencyCode"`
+    OrderAmount string `json:"OrderAmount"`
+    CreatedAt string `json:"createdAt"`
+    InternalChargeOrderPath string `json:"internalChargeOrderPath"`
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    ChannelBankAccount string `json:"channelBankAccount"`
+}
+
+type WithDrawOrder {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    OrderNo string `json:"orderNo"`
+    MerchantOrderNo string `json:"merchantOrderNo"`
+    MerchantAccountName string `json:"accountName"`
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    MerchantBankProvince string `json:"merchantBankProvince"`
+    MerchantBankCity string `json:"merchantBankCity"`
+    MerchantBankName string `json:"merchantBankName"`
+    CurrencyCode string `json:"currencyCode"`
+    OrderAmount string `json:"OrderAmount"`
+    CreatedAt string `json:"createdAt"`
+    HandlingFee float64 `json:"handlingfee"`
+    Status string `json:"status"`
+    ChangeType string `json:"changeType"`
+    SubWithdrawAllStatus string `json:"subWithdrawAllStatus"`
+}
+
+type BatchCheck {
+    CurrencyCode string `json:"currencyCode"`
+    MerchantAccountName string `json:"merchantAccountName"`
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    MerchantBankNo string `json:"merchantBankNo"`
+    MerchantBankName string `json:"merchantBankName"`
+    MerchantBankProvince string `json:"merchantBankProvince"`
+    MerchantBankCity string `json:"merchantBankCity"`
+    TransferAmount float64 `json:"transferAmount, optional"`
+    OrderAmount float64 `json:"orderAmount, optional"`
+    Valid bool `json:"valid, optional"`
+    MinWithdrawCharge float64 `json:"minWithdrawCharge, optional"`
+    MaxWithdrawCharge float64 `json:"maxWithdrawCharge, optional"`
+}
+
+type UploadImageRequest {
+}
+
+type ChannelWithdraw {
+    ChannelCode string `json:"channelCode"`
+    WithdrawAmount float64 `json:"withdrawAmount"`
+}
+
+type OrderChannels {
+    ID int64 `json:"id"`
+    OrderNo string `json:"orderNo"`
+    OrderSubNo string `json:"orderSubNo,optional"`
+    ChannelCode string `json:"channelCode"`
+    ChannelData ChannelData `json:"channelData, optional" gorm:"foreignKey:Code;references:ChannelCode"`
+    OrderAmount float64 `json:"orderAmount"`
+    TransferHandlingFee float64 `json:"transferHandlingFee"`
+    HandlingFee float64 `json:"handlingFee"`
+    Status string `json:"status, optional"`
+    Fee float64 `json:"fee, optional"`
+}
+
+//新增
+type OrderInternalCreateRequest {
+    Type string `json:"type, optional"`
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    MerchantAccountName string `json:"merchantAccountName"`
+    MerchantBankNo string `json:"merchantBankNo"`
+    MerchantBankName string `json:"merchantBankName, optional"`
+    MerchantBankProvince string `json:"merchantBankProvince, optional"`
+    MerchantBankCity string `json:"merchantBankCity, optional"`
+    ChannelBankAccount string `json:"channelBankAccount, optional"`
+    ChannelAccountName string `json:"channelAccountName, optional"`
+    ChannelBankNo string `json:"channelBankNo, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    OrderAmount float64 `json:"orderAmount"`
+}
+//新增代付提單
+type OrderProxyCreateRequeset {
+    Index string `json:"index"`
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    MerchantBankNo string `json:"merchantBankNo"`
+    MerchantBankName string `json:"merchantBankName, optional"`
+    MerchantAccountName string `json:"merchantAccountName"`
+    MerchantBankProvince string `json:"merchantBankProvince, optional"`
+    MerchantBankCity string `json:"merchantBankCity, optional"`
+    CurrencyCode string `json:"currencyCode"`
+    OrderAmount float64 `json:"orderAmount"`
+}
+//新增下發提單
+type OrderWithdrawCreateRequest {
+    MerchantAccountName string `json:"merchantAccountName"`
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    MerchantBankNo string `json:"merchantBankNo"`
+    MerchantBankName string `json:"merchantBankName, optional"`
+    MerchantBankProvince string `json:"merchantBankProvince, optional"`
+    MerchantBankCity string `json:"merchantBankCity, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    OrderAmount float64 `json:"orderAmount"`
+    Index string `json:"index, optional"`
+    PtBalanceId int64 `json:"ptBalanceId, optional"`
+}
+
+type MultipleOrderProxyCreateRequest {
+    List []OrderProxyCreateRequeset `json:"list"`
+    TypeSubNo string `json:"typeSubNo, optional"`
+}
+
+type MultipleOrderWithdrawCreateRequest {
+    List []OrderWithdrawCreateRequest `json:"list"`
+}
+
+type MultipleOrderCreateResponse {
+    Index []string `json:"index"`
+    Errs []string `json:"errs"`
+}
+//修改
+type InternalChargeRate {
+    AgentlayerCode string `json:"agentlayerCode"`
+    Rate float64 `json:"rate"`
+}
+
+type OrderUpdateRequest {
+    ID int64 `json:"id"`
+    Status string `json:"status"`
+    OrderNo string `json:"orderNo"`
+    Memo string `json:"memo, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    ChannelCode string `json:"channelCode, optional"`
+    Rate float64 `json:"rate, optional"`
+    ChnRate float64 `json:"chnRate, optional"`
+    NcRates []InternalChargeRate `json:"ncRates, optional"`
+    ChannelPayTypesCode string `json:"channelPayTypesCode, optional"`
+}
+
+type WithdrawOrderUpdateRequest {
+    List []ChannelWithdraw `json:"list"`
+    OrderUpdateRequest
+    PtBalanceId int64 `json:"ptBalanceId, optional"`
+}
+
+//查询
+type InternalChargeOrderQueryAllRequest {
+    MerchantCode string `json:"merchantCode"`
+    Status string `json:"status"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+}
+
+type InternalChargeOrderQueryAllResponse {
+    List []InternalChargeOrder `json:"list"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type WithDrawOrderQueryAllRequest {
+    MerchantCode string `json:"merchantCode"`
+    status string `json:"status"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+}
+
+type WithdrawOrderQueryAllResponse {
+    List []WithDrawOrder `json:"list"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type BatchCheckOrderRequest {
+    List []BatchCheck `json:"list"`
+    Type string `json:"type"`
+    TypeSubNo string `json:"typeSubNo, optional"`
+}
+
+type BatchCheckOrderRespsonse {
+    List []BatchCheck `json:"list"`
+    TotalPrice float64 `json:"totalPrice"`
+    HandlingFee float64 `json:"handlingFee"`
+    MerFee float64 `json:"merFee"`
+    IsRate string `json:"isRate"`
+}
+
+//查詢今日待審核筆數
+type OrderQueryWaitAuditNumberRequest {
+    Type string `json:"type"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+}
+
+type OrderQueryWaitAuditNumberResponse {
+    WaitAuditNumber int64 `json:"waitAuditNumber"`
+}
+
+// 查詢商戶設定渠道費率
+type OrderQueryMerchantChannelFeeRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode"`
+    Type string `json:"type"`
+}
+//查询币别与银行
+type OrderQueryMerchantCurrencyAndBanksResponse {
+}
+
+type WithdrawOrderChannelRequest {
+    CurrencyCode string `json:"currencyCode"`
+    Status []string `json:"status,optional"`
+    IsProxy []string `json:"isProxy,optional"`
+    IsXf string `json:"isXf,optional"`
+}
+
+type WithdrawOrderChannelResponse {
+    List []ChannelCodeAndHandlingFee `json:"list"`
+}
+
+type WithdrawOrderFeeRequest {
+    CurrencyCode string `json:"currencyCode"`
+    UserAccount string `json:"userAccount"`
+}
+
+type WithdrawOrderFeeResponse {
+    HandlerFee float64 `json:"handlerFee"`
+    MinWithdrawCharge float64 `json:"minWithdrawCharge"`
+    MaxWithdrawCharge float64 `json:"maxWithdrawCharge"`
+    Balance float64 `json:"balance"`
+    PtBalance []MerchantPtBalance `json:"ptBalance"`
+}
+
+type WithdrawOrderUpdateReviewProcssRequest {
+    orderNo string `json:"orderNo"`
+}
+
+type WithdrawVerifyWayResponse {
+    PayingValidatedType string `json:"payingValidatedType"`
+}
+
+type WithdrawVerifyPasswordRequest {
+    WithdrawPassword string `json:"withdrawPassword"`
+}
+
+type WithdrawVerifyPasswordResponse {
+
+}
+
+type ProxyOrderToTestRequest {
+    orderNo string `json:"orderNo"`
+}
+
+type ProxyOrderToTestResponse {
+
+}
+
+type ProxyOrderToSuccessRequest{
+    orderNo string `json:"orderNo"`
+    status string `json:"status"`
+}
+
+type ProxyOrderToSuccessResponse{
+
+}
+
+type PayOrderToTestRequest {
+    orderNo string `json:"orderNo"`
+}
+
+type PayOrderToTestResponse {
+
+}
+
+type WithdrawOrderToTestRequest {
+    orderNo string `json:"orderNo"`
+    ptBalanceId int64 `json:"ptBalanceId"`
+    remark  string `json:"remark, optional"`
+}
+
+type WithdrawOrderToTestResponse {
+    RespCode string `json:"respCode"`
+    RespMsg  string `json:"respMsg"`
+}
+
+type SubWithdrawToChannelRequest {
+    List []WithdrawChannel `json:"list"`
+    OrderNo string `json:"orderNo"`
+    Payer string `json:"payer"`
+    BankName string `json:"bankName"`
+    amount string `json:"amount"`
+    currencyCode string `json:"currencyCode"`
+}
+
+type WithdrawChannel struct {
+    ChannelCode string `json:"channelCode"`
+    WithdrawAmount float64 `json:"withdrawAmount"`
+}
+
+type QuerySubWithdrawRequest struct {
+    OrderNo string `json:"orderNo"`
+}
+
+type TxOrderChannels struct {
+    ID int64 `json:"id"`
+    OrderNo string `json:"order_no"`
+    ChannelCode string `json:"channel_code"`
+    ChannelName string `json:"channel_name"`
+    OrderAmount float64 `json:"order_amount"`
+    TransferHandlingFee float64 `json:"transfer_handling_fee"`
+    Fee float64 `json:"fee"`
+    HandlingFee float64 `json:"handling_fee"`
+    CreatedAt string `json:"created_at"`
+    UpdatedAt string `json:"updated_at"`
+    Status string `json:"status"`
+    ErrorMsg string `json:"error_msg"`
+    ChannelOrderNo string `json:"channel_order_no"`
+    IsRate string `json:"is_rate,optional" gorm:"-"`
+}
+
+type QuerySubWithdrawResponse struct {
+    List []TxOrderChannels `json:"list"`
+}
+
+type WithdrawOrderCallBackRequest struct {
+    WithdrawOrderNo string `json:"proxyPayOrderNo"`         // 平台订单号
+    ChannelOrderNo string `json:"channelOrderNo"`           //渠道商回复单号
+    ChannelResultAt string `json:"channelResultAt"`         //渠道商回复日期  //(YYYYMMDDhhmmss)
+    ChannelResultStatus string `json:"channelResultStatus"` //渠道商回复处理状态  //(Dior渠道商范例：状态 0处理中，1成功，2失败) */
+    ChannelResultNote string `json:"channelResultNote"`     //渠道商回复处理备注
+    Amount float64 `json:"amount"`                          //代付金额
+    ChannelCharge float64 `json:"channelCharge"`            //渠道商成本
+    UpdatedBy string `json:"updatedBy"`                     //更新人员
+}
+
+//渠道App 回调Bo 请求参数
+type ProxyPayOrderCallBackRequest struct {
+    ProxyPayOrderNo string `json:"proxyPayOrderNo"`         // 平台订单号
+    ChannelOrderNo string `json:"channelOrderNo"`           //渠道商回复单号
+    ChannelResultAt string `json:"channelResultAt"`         //渠道商回复日期  //(YYYYMMDDhhmmss)
+    ChannelResultStatus string `json:"channelResultStatus"` //渠道商回复处理状态  //(Dior渠道商范例：状态 0处理中，1成功，2失败) */
+    ChannelResultNote string `json:"channelResultNote"`     //渠道商回复处理备注
+    Amount float64 `json:"amount"`                          //代付金额
+    ChannelCharge float64 `json:"channelCharge"`            //渠道商成本
+    UpdatedBy string `json:"updatedBy"`                     //更新人员
+}
+
+type ProxyPayOrderCallBackResponse {
+    RespCode string `json:"respCode"`
+    RespMsg string `json:"respMsg"`
+    Status int `json:"status"`
+    Data string `json:"data"`
+}
+
+type SubWithdrawOrderUpdateRequest {
+    OrderUpdateRequest
+}
+
+
+
+@server(
+    jwt: Auth
+    group: order
+    prefix: api/v1/transaction
+)
+service boadmin-api {
+    @handler InternalChargeOrderCreateHandler
+    post /order/interCharge_create (OrderInternalCreateRequest)
+
+    @handler InternalChargeOrderCreateCsHandler
+    post /order/interCharge_create_cs (OrderInternalCreateRequest)
+
+    @handler ProxyPayOrderCreateHandler
+    post /order/proxypay_create (MultipleOrderProxyCreateRequest) returns (MultipleOrderCreateResponse)
+
+    @handler ProxyOrderToTestHandler
+    post /order/change_to_test (ProxyOrderToTestRequest) returns (ProxyOrderToTestResponse)
+
+    @handler ProxyOrderToSuccessHandler
+    post /order/proxy_change_to_success (ProxyOrderToSuccessRequest) returns (ProxyOrderToSuccessResponse)
+
+    @handler PayOrderToTestHandler
+    post /order/pay_change_to_test (PayOrderToTestRequest) returns (PayOrderToTestResponse)
+
+    @handler WithdrawOrderCreateHandler
+    post /order/withdraw_create (MultipleOrderWithdrawCreateRequest) returns (MultipleOrderCreateResponse)
+
+    @handler OrderUpdateHandler
+    post /order/update (OrderUpdateRequest)
+
+    @handler WithdrawReviewHandler
+    post /order/withdraw_review (WithdrawOrderUpdateRequest)
+
+    @handler OrderImageUploadHandler
+    post /order/image_upload (UploadImageRequest) returns (string)
+
+    @handler BatchCheckHandler
+    post /order/batchcheck (BatchCheckOrderRequest) returns (BatchCheckOrderRespsonse)
+
+    @handler InternalChargeOrderQueryAllHandler
+    post /order/internalCharge_query_all (InternalChargeOrderQueryAllRequest) returns (InternalChargeOrderQueryAllResponse)
+
+    @handler WithdrawOrderQueryAllHandler
+    post /order/withdraw_query_all (WithDrawOrderQueryAllRequest) returns (WithdrawOrderQueryAllResponse)
+
+    @handler OrderQueryWaitAuditNumberHandler
+    post /order/waitauditNumber_query (OrderQueryWaitAuditNumberRequest) returns (OrderQueryWaitAuditNumberResponse)
+
+    @handler OrderQueryMerchantChannelFeeHandler
+    post /order/query_chn_fee (OrderQueryMerchantChannelFeeRequest) returns (OrderQueryMerchantCurrencyAndBanksResponse)
+
+    @handler WithdrawOrderChannelHandler
+    post /order/query_withdraw_chn (WithdrawOrderChannelRequest) returns (WithdrawOrderChannelResponse)
+
+    @handler WithdrawOrderFeeHandler
+    post /order/query_withdraw_fee (WithdrawOrderFeeRequest) returns (WithdrawOrderFeeResponse)
+
+    @handler WithdrawOrderUpdateReviewProcessHandler
+    post /order/update_withdraw_process (WithdrawOrderUpdateReviewProcssRequest)
+
+    @handler WithdrawVerifyWayHandler
+    post /order/withdraw_verify_way () returns (WithdrawVerifyWayResponse)
+
+    @handler WithdrawVerifyPasswordHandler
+    post /order/withdraw_verify_passwd (WithdrawVerifyPasswordRequest)
+
+    @handler WithdrawOrderToTestHandler
+    post /order/withdraw_change_to_test (WithdrawOrderToTestRequest) returns (WithdrawOrderToTestResponse)
+
+    @handler SubWithdrawToChannelHandler
+    post /order/sub-withdraw-to-channel (SubWithdrawToChannelRequest) returns (string)
+
+    @handler QuerySubWithdrawHandler
+    post /order/query-sub-withdraw (QuerySubWithdrawRequest) returns (QuerySubWithdrawResponse)
+
+    @handler SubWithdrawCallBackHandler
+    post /order/sub-withdraw-call-back (ProxyPayOrderCallBackRequest) returns (ProxyPayOrderCallBackResponse)
+
+    @handler SubWithdrawReviewHandler
+    post /order/sub_withdraw_review (SubWithdrawOrderUpdateRequest) returns (string)
+}

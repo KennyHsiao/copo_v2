@@ -1,0 +1,97 @@
+syntax = "v1"
+
+info(
+    title: "商戶幣別"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type MerchantCurrency {
+    ID int64 `json:"id, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    Status string `json:"status, optional"`
+    WithdrawHandlingFee float64 `json:"withdrawHandlingFee, optional"`
+    IsDisplayPtBalance string `json:"isDisplayPtBalance, optional"`
+    SortOrder int64 `json:"sortOrder, optional"`
+}
+
+type MerchantCurrencyCreateRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    WithdrawHandlingFee float64 `json:"withdrawHandlingFee, optional"`
+    MinWithdrawCharge float64 `json:"minWithdrawCharge, optional"`
+    MaxWithdrawCharge float64 `json:"maxWithdrawCharge, optional"`
+    Status string `json:"status, optional"`
+    IsDisplayPtBalance string `json:"isDisplayPtBalance, optional"`
+    SortOrder int64 `json:"sortOrder, optional"`
+}
+
+type MerchantCurrencyUpdateRequest {
+    ID int64 `json:"id, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    WithdrawHandlingFee float64 `json:"withdrawHandlingFee, optional"`
+    MinWithdrawCharge float64 `json:"minWithdrawCharge, optional"`
+    MaxWithdrawCharge float64 `json:"maxWithdrawCharge, optional"`
+    Status string `json:"status, optional"`
+    SortOrder int64 `json:"sortOrder, optional"`
+}
+
+
+// 查詢
+type MerchantCurrencyQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type MerchantCurrencyQueryResponse {
+    MerchantCurrency
+}
+
+// 分頁查詢
+type MerchantCurrencyQueryAllRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    Status string `json:"status, optional"`
+    IsDisplayPtBalance string `json:"isDisplayPtBalance, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantCurrencyQueryAllResponse {
+    List []MerchantCurrency `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type MerchantGetAvailableCurrencyRequest {
+    MerchantCode string `json:"merchantCode"`
+}
+
+
+type MerchantUpdateCurrenciesRequest {
+    MerchantCode string `json:"merchantCode"`
+}
+
+@server(
+    jwt: Auth
+    group: merchantcurrency
+    prefix: api/v1/merchant
+)
+service boadmin-api {
+    @handler MerchantCurrencyQueryHandler
+    post /merchantcurrency/query (MerchantCurrencyQueryRequest) returns (MerchantCurrencyQueryResponse)
+
+    @handler MerchantCurrencyQueryAllHandler
+    post /merchantcurrency/query_all (MerchantCurrencyQueryAllRequest) returns (MerchantCurrencyQueryAllResponse)
+
+    @handler MerchantGetAvailableCurrencyHandler
+    post /merchantcurrency/get_available_currency (MerchantGetAvailableCurrencyRequest) returns ([]MerchantCurrency)
+
+
+    @handler MerchantUpdateCurrenciesHandler
+    post /merchantcurrency/update_currencies (MerchantUpdateCurrenciesRequest)
+}

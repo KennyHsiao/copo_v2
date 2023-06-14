@@ -1,0 +1,108 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type Role {
+    ID int64 `json:"id, optional"`
+    Slug string `json:"slug, optional"`
+    Name string `json:"name, optional"`
+    NameI18n NameI18n `json:"nameI18N, optional"`
+    Type string `json:"type, optional "`
+    Menus []Menu `json:"menus, optional" gorm:"many2many:au_role_menus;foreignKey:id;joinForeignKey:role_id;"`
+    Permits []Permit `json:"permits, optional" gorm:"many2many:au_role_permits;foreignKey:id;joinForeignKey:role_id;"`
+}
+
+// 新增
+type RoleCreateRequest {
+    ID int64 `json:"id, optional"`
+    Slug string `json:"slug" validate:"required,lte=16"`
+    Name string `json:"name" validate:"required,lte=32"`
+    NameI18n NameI18n `json:"nameI18N, optional"`
+    Type string `json:"type" validate:"required"`
+    Menus []Menu `json:"menus, optional" gorm:"many2many:au_role_menus;foreignKey:id;joinForeignKey:role_id;"`
+    Permits []Permit `json:"permits, optional" gorm:"many2many:au_role_permits;foreignKey:id;joinForeignKey:role_id;"`
+}
+
+// 修改
+type RoleUpdateRequest {
+    ID int64 `json:"id"`
+    Slug string `json:"slug" validate:"required,lte=16"`
+    Name string `json:"name" validate:"required,lte=32"`
+    NameI18n NameI18n `json:"nameI18N, optional"`
+    Type string `json:"type" validate:"required"`
+    Menus []Menu `json:"menus, optional" gorm:"many2many:au_role_menus;foreignKey:id;joinForeignKey:role_id;"`
+    Permits []Permit `json:"permits, optional" gorm:"many2many:au_role_permits;foreignKey:id;joinForeignKey:role_id;"`
+}
+
+// 刪除
+type RoleDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+// 查詢
+type RoleQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type RoleQueryResponse {
+    Role
+}
+
+type RoleQueryAllRequest {
+    Name string `json:"name, optional"`
+    Type string `json:"type, optional"`
+    Language string `json:"language, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type RoleQueryAllResponse {
+    List []Role `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+
+type RoleDropDownItemRequest {
+    Type string `json:"type, optional"`
+}
+
+type RoleDropDownItem {
+    id int64 `json:"id"`
+    slug string `json:"slug"`
+    name string `json:"name"`
+    NameI18n NameI18n `json:"nameI18N, optional"`
+    Type string `json:"type"`
+}
+
+@server(
+    jwt: Auth
+    group: role
+    prefix: api/v1/auth
+)
+service boadmin-api {
+    @handler RoleCreateHandler
+    post /role/create (RoleCreateRequest)
+
+    @handler RoleUpdateHandler
+    post /role/update (RoleUpdateRequest)
+
+    @handler RoleDeleteHandler
+    post /role/delete (RoleDeleteRequest)
+
+    @handler RoleQueryHandler
+    post /role/query (RoleQueryRequest) returns (RoleQueryResponse)
+
+    @handler RoleQueryAllHandler
+    post /role/query_all (RoleQueryAllRequest) returns (RoleQueryAllResponse)
+
+    @handler GetRoleDropDownList
+    post /role/get_drop_down_list (RoleDropDownItemRequest) returns ([]RoleDropDownItem)
+}

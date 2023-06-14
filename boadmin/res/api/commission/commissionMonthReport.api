@@ -1,0 +1,113 @@
+syntax = "v1"
+
+info(
+    title: "傭金"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type CommissionMonthReport struct {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    AgentLayerNo string `json:"agentLayerNo"`
+    Month string `json:"month"`
+    CurrencyCode string `json:"currencyCode"`
+    Status string `json:"status"`
+    PayTotalAmount float64 `json:"payTotalAmount"`
+    PayCommission float64 `json:"payCommission"`
+    InternalChargeTotalAmount float64 `json:"internalChargeTotalAmount"`
+    InternalChargeCommission float64 `json:"internalChargeCommission"`
+    ProxyPayTotalAmount float64 `json:"proxyPayTotalAmount"`
+    ProxyPayTotalNumber float64 `json:"proxyPayTotalNumber"`
+    ProxyPayCommission float64 `json:"proxyPayCommission"`
+    TotalCommission float64 `json:"totalCommission"`
+    ChangeCommission float64 `json:"changeCommission"`
+    Comment string `json:"comment"`
+    ConfirmBy string `json:"confirmBy"`
+}
+
+type CommissionMonthReportDetail struct {
+    CommissionMonthReportId int64 `json:"commission_month_report_id"`
+    MerchantCode string `json:"merchantCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    OrderType string `json:"orderType"`
+    MerchantFee float64 `json:"merchantFee"`
+    AgentFee float64 `json:"agentFee"`
+    DiffFee float64 `json:"diffFee"`
+    MerchantHandlingFee float64 `json:"merchantHandlingFee"`
+    AgentHandlingFee float64 `json:"agentHandlingFee"`
+    DiffHandlingFee float64 `json:"diffHandlingFee"`
+    TotalAmount float64 `json:"totalAmount"`
+    TotalNumber float64 `json:"totalNumber"`
+    TotalCommission float64 `json:"totalCommission"`
+}
+
+// 分頁查詢
+type CommissionMonthReportQueryAllRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    AgentLayerNo string `json:"agentLayerNo, optional"`
+    Month string `json:"month, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type CommissionMonthReportQueryAllResponse {
+    List []CommissionMonthReport `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type CommissionMonthReportCreateForMonthRequest {
+    Month string `json:"month"`
+}
+
+type CommissionMonthReportRecalculateRequest {
+    ID int64 `json:"id"`
+}
+
+type CommissionMonthReportChangeRequest {
+    ID int64 `json:"id"`
+    ChangeCommission float64 `json:"changeCommission"`
+    Comment string `json:"comment, optional"`
+}
+
+type CommissionMonthReportConfirmRequest {
+    ID int64 `json:"id"`
+}
+
+type CommissionMonthReportExcelRequest {
+    IDList []int64 `json:"idList"`
+}
+
+type CommissionMonthReportExcelResponse {
+
+}
+
+@server(
+    jwt: Auth
+    group: commissionMonthReport
+    prefix: api/v1/commission
+)
+service boadmin-api {
+    @handler MonthReportQueryAllHandler
+    post /monthReport/query_all (CommissionMonthReportQueryAllRequest) returns (CommissionMonthReportQueryAllResponse)
+
+    @handler MonthReportExcelHandler
+    post /monthReport/excel (CommissionMonthReportExcelRequest) returns (CommissionMonthReportExcelResponse)
+
+    @handler MonthReportCreateForMonthHandler
+    post /monthReport/create_for_month (CommissionMonthReportCreateForMonthRequest)
+
+    @handler MonthReportRecalculateHandler
+    post /monthReport/recalculate (CommissionMonthReportRecalculateRequest)
+
+    @handler MonthReportChangeHandler
+    post /monthReport/change (CommissionMonthReportChangeRequest)
+
+    @handler MonthReportConfirmHandler
+    post /monthReport/confirm (CommissionMonthReportConfirmRequest)
+}

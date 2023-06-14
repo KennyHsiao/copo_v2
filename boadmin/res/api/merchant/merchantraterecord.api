@@ -1,0 +1,57 @@
+syntax = "v1"
+
+info(
+    title: "商戶费率紀錄"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+
+type MerchantRateRecordRequest {
+    ChannelPayTypeCode string `json:"channelPayTypeCode"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantRateRecordResponse {
+    List [] MerchantRateRecord `json:"list"`
+    PageNum  int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+    RowCount int64             `json:"rowCount"`
+}
+
+type MerchantRateRecord {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    ChannelPayTypeCode string `json:"channelPayTypeCode"`
+    ModifyType string `json:"balanceType, optional"`
+    BeforeRate float64 `json:"beforeBalance"`
+    AfterRate float64 `json:"afterBalance"`
+    CreatedBy string `json:"createdBy"`
+    CreatedAt string `json:"createdAt"`
+}
+
+type MerchantRateRecordCreateRequest {
+    ID int64 `json:"id,optional"`
+    MerchantCode string `json:"merchantCode"`
+    ChannelPayTypeCode string `json:"channelPayTypeCode"`
+    ModifyType string `json:"modifyType,optional"`
+    BeforeRate float64 `json:"beforeRate,optional"`
+    AfterRate float64 `json:"afterRate,optional"`
+    CreatedBy string `json:"createdBy"`
+}
+
+
+@server(
+    group: merchantraterecord
+    prefix: api/v1/merchant
+)
+service boadmin-api {
+    @handler MerchantRateRecordQueryAllHandler
+    post /merchantraterecord/query_all (MerchantRateRecordRequest) returns (MerchantRateRecordResponse)
+
+    @handler MerchantRateRecordCreateHandler
+    post /merchantraterecord/create (MerchantRateRecordCreateRequest)
+}

@@ -1,0 +1,137 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+
+type ReviewProcessRequest {
+    CurrencyCode string `json:"currencyCode"`
+    Location string `json:"location"`
+}
+
+type ReviewProcessResponse {
+    InternalChargeOrderNum string `json:"internalChargeOrderNum"`
+    WithdrawOrderNum string `json:"withdrawOrderNum"`
+    PersonalRepaymentNum string `json:"personalRepaymentNum"`
+}
+
+type WithdrawBalance{
+    Date string `json:"date"`
+    WithdrawBalance float64 `json:"withdrawBalance"`
+}
+
+type ProxyPayBalance {
+    Date string `json:"date"`
+    ProxyPayBalance float64 `json:"proxyPayBalance"`
+}
+
+type TotalPayOutRequest {
+    CurrencyCode string `json:"currencyCode"`
+    Location string `json:"location"`
+}
+
+type TotalPayOutResponse {
+    WithdrawBalances []WithdrawBalance `json:"withdrawBalances"`
+    ProxyPayBalances []ProxyPayBalance `json:"proxyPayBalances"`
+}
+
+type TotalDisplayRequest {
+    CurrencyCode string `json:"currencyCode"`
+    Location string `json:"location"`
+}
+
+type TotalDisplayResponse {
+    WithdrawBalance float64 `json:"withdrawBalance"`
+    ProxyPayBalance float64 `json:"proxyPayBalance"`
+    ReceiveTransAmount float64 `json:"receiveTransAmount"`
+    PayoutTransAmount float64 `json:"payoutTransAmount"`
+    income          float64 `json:"income"`
+}
+
+type IncomeDetailRequest {
+    CurrencyCode string `json:"currencyCode"`
+    Location string `json:"location"`
+}
+
+type IncomeDetailResponse {
+    ZfRate float64 `json:"zfRate"`
+    NcRate float64 `json:"ncRate"`
+    DfRate float64 `json:"dfRate"`
+    XfHandlingFee float64 `json:"xfHandlingFee"`
+}
+
+type TotalPayout {
+    Date string `json:"date"`
+    ProxyPayHandlingFee float64 `json:"proxyPayHandlingFee"`
+    WithdrawHandlingFee float64 `json:"withdrawHandlingFee"`
+}
+
+type TotalPayoutHandlingFeeRequest {
+    CurrencyCode string `json:"currencyCode"`
+    Location string `json:"location, optional"`
+}
+
+type TotalPayoutHandlingFeeResponse {
+    List []TotalPayout `json:"list"`
+}
+
+type WeeklyTotalIncome {
+    Date string `json:"date"`
+    IncomeDetail IncomeDetailResponse `json:"incomeDetailResponse"`
+}
+
+type WeeklyTotalIncomeRequest {
+    CurrencyCode string `json:"currencyCode"`
+    Location string `json:"location, optional"`
+}
+
+type WeeklyTotalIncomeResponse {
+    List []WeeklyTotalIncome `json:"list"`
+}
+
+type WeeklyTransDetail {
+    Date string `json:"date"`
+    ZfTotalAmount float64 `json:"zfTotalAmount"`
+    DfTotalAmount float64 `json:"dfTotalAmount"`
+    XfTotalAmount float64 `json:"xfTotalAmount"`
+    NcTotalAmount float64 `json:"ncTotalAmount"`
+}
+
+type WeeklyTransDetailRequest {
+    CurrencyCode string `json:"currencyCode"`
+    Location string `json:"location, optional"`
+}
+
+type WeeklyTransDetailResponse {
+    List []WeeklyTransDetail `json:"list"`
+}
+
+@server(
+    jwt: Auth
+    group: report
+    prefix: api/v1/report
+)
+service boadmin-api {
+    @handler ReviewProcessHandler
+    post /dashboard/review_process (ReviewProcessRequest) returns (ReviewProcessResponse)
+
+    @handler TotalDisplayHandler
+    post /dashboard/total_display (TotalDisplayRequest) returns (TotalDisplayResponse)
+
+    @handler IncomeDetailHandler
+    post /dashboard/income_detail (IncomeDetailRequest) returns (IncomeDetailResponse)
+
+    @handler TotalPayoutHandlingFeeHandler
+    post /dashboard/total_payout_handlingFee (TotalPayoutHandlingFeeRequest) returns (TotalPayoutHandlingFeeResponse)
+
+    @handler WeeklyTotalIncomeHandler
+    post /dashboard/weekly_total_income (WeeklyTotalIncomeRequest) returns (WeeklyTotalIncomeResponse)
+
+    @handler WeeklyTransDetailHandler
+    post /dashboard/weekly_trans_detail (WeeklyTransDetailRequest) returns (WeeklyTransDetailResponse)
+}

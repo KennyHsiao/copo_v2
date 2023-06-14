@@ -1,0 +1,57 @@
+syntax = "v1"
+
+info(
+    title: "渠道费率记录"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+
+type ChannelRateRecordRequest {
+    ChannelCode string `json:"channelCode"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type ChannelRateRecordresponse {
+    List [] ChannelRateRecord `json:"list"`
+    PageNum  int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+    RowCount int64             `json:"rowCount"`
+}
+
+type ChannelRateRecord{
+    ID int64 `json:"id"`
+    ChannelPayTypeCode string `json:"channelPayTypeCode"`
+    ModifyType string `json:"balanceType, optional"`
+    BeforeRate float64 `json:"beforeBalance"`
+    AfterRate float64 `json:"afterBalance"`
+    CreatedBy string `json:"createdBy"`
+    CreatedAt string `json:"createdAt"`
+}
+
+type ChannelRateRecordCreateRequest {
+    ID int64 `json:"id"`
+    ChannelPayTypeCode string `json:"channelPayTypeCode"`
+    ModifyType string `json:"balanceType, optional"`
+    BeforeRate float64 `json:"beforeBalance"`
+    AfterRate float64 `json:"afterBalance"`
+    CreatedBy string `json:"createdBy"`
+    CreatedAt string `json:"createdAt"`
+}
+
+
+
+@server(
+    group: channelraterecord
+    prefix: api/v1/channel
+)
+service boadmin-api  {
+    @handler ChannelRateRecordQueryAllHandler
+    post /channelraterecord/query_all (ChannelRateRecordRequest) returns (ChannelRateRecordresponse)
+
+    @handler ChannelRateRecordCreateHandler
+    post /merchantraterecord/create (ChannelRateRecordCreateRequest)
+}

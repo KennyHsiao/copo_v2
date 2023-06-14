@@ -1,0 +1,52 @@
+syntax = "v1"
+
+info(
+    title: "渠道餘額資料"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type ChannelBalanceUpdateRequest {
+    ChannelCodeList []string `json:"channelCodeList"`
+}
+
+type ChannelBalanceQueryRequest {
+    CurrencyCode string `json:"currencyCode"`
+    Code string `json:"code, optional"`
+    Name string `json:"name, optional"`
+    Status string `json:"status, optional"`
+    IsProxy string `json:"isProxy, optional"`
+}
+
+type ChannelBalanceQueryResponse {
+    XfBalance float64 `json:"xfBalance"`
+    DfBalance float64 `json:"dfBalance"`
+    TotalBalance float64 `json:"totalBalance"`
+}
+
+@server(
+    jwt: Auth
+    group: channelbalance
+    prefix: api/v1/channel
+)
+
+service boadmin-api {
+    @handler ChannelBalanceUpdateHandler
+    post /channelbalance/update (ChannelBalanceUpdateRequest)
+
+    @handler ChannelBalanceQueryHandler
+    post /channelbalance/query_all (ChannelBalanceQueryRequest) returns (ChannelBalanceQueryResponse)
+
+}
+
+@server(
+    group: channelbalance
+    prefix: api/v1/channel_schedule
+)
+
+service boadmin-api {
+    @handler ChannelBalanceScheduleUpdateHandler
+    post /channelbalance/update ()
+}

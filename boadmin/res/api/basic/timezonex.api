@@ -1,0 +1,78 @@
+syntax = "v1"
+
+info(
+    title: "時區維護"
+    desc: "type desc here"
+    author: "Eddie"
+    email: "eddie@e-pay.vip"
+    version: "type version here"
+)
+
+type Timezonex {
+    ID int64 `json:"id"`
+    Code string `json:"code"`
+    Name string `json:"name"`
+}
+
+//新增
+type TimezonexCreateRequest {
+    Code string `json:"code" validate: "required, lte=2"`
+    Name string `json:"name" validate: "required, lte=64"`
+}
+
+//修改
+type TimezonexUpdateRequest {
+    ID int64 `json:"id"`
+    Code string `json:"code" validate: "required, lte=2"`
+    Name string `json:"name" validate: "required, lte=64"`
+}
+
+//刪除
+type TimezonexDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+//查詢
+type TimezonexQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type TimezonexQueryResponse {
+    Timezonex
+}
+
+type TimezonexQueryAllRequest {
+    Code string `json:"code, optional"`
+    Name string `json:"name, optional"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+}
+
+type TimezonexQueryAllResponse {
+    List []Timezonex `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: timezonex
+    prefix: api/v1/basic
+)
+service boadmin-api {
+    @handler TimezonexCreateHandler
+    post /timezonex/create (TimezonexCreateRequest)
+
+    @handler TimezonexUpdateHandler
+    post /timezonex/update (TimezonexUpdateRequest)
+
+    @handler TimezonexDeleteHandler
+    post /timezonex/delete (TimezonexDeleteRequest)
+
+    @handler TimezonexQueryHandler
+    post /timezonex/query (TimezonexQueryRequest) returns (TimezonexQueryResponse)
+
+    @handler TimezonexQueryAllHandler
+    post /timezonex/query_all (TimezonexQueryAllRequest) returns (TimezonexQueryAllResponse)
+}

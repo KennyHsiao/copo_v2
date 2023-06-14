@@ -1,0 +1,229 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type PayCheckBill {
+    MerchantCode string `json:"merchantCode"`
+    ChannelName string `json:"channelName"`
+    PayTypeName string `json:"payTypeName"`
+    TotalNum int `json:"totalNum"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    PayTotalTransferHandlingFee float64 `json:"payTotalTransferHandlingFee"`
+    TotalHandlingFee float64 `json:"totalHandlingFee"`
+    SystemCommission float64 `json:"systemCommission"`
+    AgentCommission float64 `json:"agentCommission"`
+    AdjustmentAmount float64 `json:"adjustmentAmount"`
+}
+
+type PayCheckBillQueryRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode"`
+    ChannelName string `json:"channelName, optional"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+}
+
+type PayCheckBillQueryResponse {
+    List []PayCheckBill `json:"list"`
+    TotalNum int `json:"totalNum"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalHandlingFee float64 `json:"totalHandlingFee"`
+    PayTotalTransferHandlingFee float64 `json:"payTotalTransferHandlingFee"`
+    SystemCommission float64 `json:"systemCommission"`
+    AgentCommission float64 `json:"agentCommission"`
+    AdjustmentAmount float64 `json:"adjustmentAmount"`
+    TotalSystemCost float64 `json:"totalSystemCost"`
+}
+
+type WithdrawCheckBill {
+    MerchantCode string `json:"merchantCode"`
+    WithdrawTotalNum int `json:"withdrawTotalNum"`
+    TotalSuccessNum int `json:"totalSuccessNum"`
+    TotalProcessNum int `json:"totalProcessNum"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalHandlingFee float64 `json:"totalHandlingFee"`
+}
+
+type WithdrawCheckBillQueryRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+}
+
+type WithdrawCheckBillQueryResponse {
+    List []WithdrawCheckBill `json:"list"`
+    WithdrawTotalNum int `json:"withdrawTotalNum"`
+    TotalSuccessNum int `json:"totalSuccessNum"`
+    TotalProcessNum int `json:"totalProcessNum"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalHandlingFee float64 `json:"totalHandlingFee"`
+}
+
+type InternalChargeCheckBill {
+    MerchantCode string `json:"merchantCode"`
+    ChannelName string `json:"channelName"`
+    TotalNum int `json:"totalNum"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalTransferHandlingFee float64 `json:"totalTransferHandlingFee"`
+    SystemCommission float64 `json:"systemCommission"`
+    AgentCommission float64 `json:"agentCommission"`
+}
+
+type InternalChargeCheckBillQueryResponse {
+    List []InternalChargeCheckBill `json:"list"`
+    TotalNum int `json:"totalNum"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalTransferHandlingFee float64 `json:"totalTransferHandlingFee"`
+    SystemCommission float64 `json:"systemCommission"`
+    AgentCommission float64 `json:"agentCommission"`
+}
+
+type ProxyPayCheckBill {
+    MerchantCode string `json:"merchantCode"`
+    ChannelName string `json:"channelName"`
+    TotalNum int `json:"totalNum"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalHandlingFee float64 `json:"totalHandlingFee"`
+    ChannelHandlingFee float64 `json:"channelHandlingFee"`
+    SystemCommission float64 `json:"systemCommission"`
+    AgentCommission float64 `json:"agentCommission"`
+}
+
+type ProxyPayCheckBillQueryResponse {
+    List []ProxyPayCheckBill `json:"list"`
+    TotalNum int `json:"totalNum"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalHandlingFee float64 `json:"totalHandlingFee"`
+    ChannelHandlingFee float64 `json:"channelHandlingFee"`
+    SystemCommission float64 `json:"systemCommission"`
+    AgentCommission float64 `json:"agentCommission"`
+}
+
+type IncomReport {
+    ID int64 `json:"id"`
+    CurrencyCode string `json:"currencyCode"`
+    Month string `json:"month"`
+    PayTotalAmount float64 `json:"payTotalAmount"`
+    PayNetProfit float64 `json:"payNetProfit"`
+    InternalChargeTotalAmount float64 `json:"internalChargeTotalAmount"`
+    InternalChargeNetProfit float64 `json:"internalChargeNetProfit"`
+    WithdrawTotalAmount float64 `json:"withdrawTotalAmount"`
+    WithdrawNetProfit float64 `json:"withdrawNetProfit"`
+    ProxyPayTotalAmount float64 `json:"proxyPayTotalAmount"`
+    ProxyPayNetProfit float64 `json:"proxyPayNetProfit"`
+    ReceivedTotalNetProfit float64 `json:"receivedTotalNetProfit"`
+    RemitTotalNetProfit float64 `json:"remitTotalNetProfit"`
+    TotalNetProfit float64 `json:"totalNetProfit"`
+    CommissionTotalAmount float64 `json:"commissionTotalAmount"`
+    ProfitGrowthRate float64 `json:"profitGrowthRate"`
+    TotalAllocHandlingFee float64 `json:"totalAllocHandlingFee"`
+}
+
+type IncomReportMonthQueryRequest {
+    StartMonth string `json:"startMonth"`
+    EndMonth string `json:"endMonth"`
+    CurrencyCode string `json:"currencyCode"`
+}
+
+type IcomReportMonthQueryResponse {
+    List []IncomReport `json:"list"`
+}
+
+type ReCalculateIncomMonthReportRequest {
+    Month string `json:"month"`
+}
+
+type WithdrawDetail {
+    OrderNo string `json:"orderNo"`
+    MerchantCode string `json:"merchantCode"`
+    ChannelName string `json:"channelName"`
+    OrderAmount float64 `json:"orderAmount"`
+    Memo string `json:"memo"`
+    CreatedAt string `json:"createdAt"`
+    TransAt string `json:"transAt"`
+    HandlingFee float64 `json:"handlingFee"`
+}
+
+type WithdrawDetailQueryResponse {
+    List []WithdrawDetail `json:"list"`
+    TotalNum int `json:"totalNum"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalHandlingFee float64 `json:"totalHandlingFee"`
+}
+
+type AppropriationCheckBillQueryRequest {
+    ChannelName string `json:"channelName, optional"`
+    CurrencyCode string `json:"currencyCode"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+}
+
+type AppropriationCheckBillQuery {
+    ChannelName string `json:"channelName"`
+    AppropriationCount int `json:"appropriationCount"`
+    AppropriationAmount float64 `json:"appropriationAmount"`
+    AppropriationHandlingFee float64 `json:"appropriationHandlingFee"`
+}
+
+type AppropriationCheckBillQueryResponse {
+    List []AppropriationCheckBillQuery `json:"list"`
+    TotalCount int `json:"totalCount"`
+    TotalAmount float64 `json:"totalAmount"`
+    TotalHandlingFee float64 `json:"totalHandlingFee"`
+}
+
+@server(
+    jwt: Auth
+    group: report
+    prefix: api/v1/report
+)
+service boadmin-api {
+    @handler PayCheckBillQueryHandler
+    post /statementofaccount/pay_check_bill_query (PayCheckBillQueryRequest) returns (PayCheckBillQueryResponse)
+
+    @handler PayCheckBillExcelHandler
+    post /statementofaccount/pay_check_bill_excel (PayCheckBillQueryRequest) returns ()
+
+    @handler WithdrawCheckBillQueryHandler
+    post /statementofaccount/withdraw_check_bill_query (WithdrawCheckBillQueryRequest) returns (WithdrawCheckBillQueryResponse)
+
+    @handler WithdrawCheckBillExcelHandler
+    post /statementofaccount/withdraw_check_bill_excel (WithdrawCheckBillQueryRequest) returns ()
+
+    @handler InternalChargeCheckBillQueryHandler
+    post /statementofaccount/intercharge_check_bill_query (PayCheckBillQueryRequest) returns (InternalChargeCheckBillQueryResponse)
+
+    @handler InternalChargeCheckBillExcelHandler
+    post /statementofaccount/intercharge_check_bill_excel (PayCheckBillQueryRequest) returns ()
+
+    @handler ProxyPayCheckBillQueryHandler
+    post /statementofaccount/proxy_pay_check_bill_query (PayCheckBillQueryRequest) returns (ProxyPayCheckBillQueryResponse)
+
+    @handler ProxyPayCheckBillExcelHandler
+    post /statementofaccount/proxy_pay_check_bill_excel (PayCheckBillQueryRequest) returns ()
+
+    @handler IncomReportQueryHandler
+    post /monthProfit/query (IncomReportMonthQueryRequest) returns (IcomReportMonthQueryResponse)
+
+    @handler IncomReportExcelHandler
+    post /monthProfit/excel (IncomReportMonthQueryRequest) returns ()
+
+    @handler ReCalculateIncomMonthReportHandler
+    post /monthProfit/recalculate (ReCalculateIncomMonthReportRequest) returns ()
+
+    @handler WithdrawDetailQueryHandler
+    post /statementofaccount/withdraw_detail_query (WithdrawCheckBillQueryRequest) returns (WithdrawDetailQueryResponse)
+
+    @handler AppropriationCheckBillQueryHandler
+    post /statementofaccount/appropiation_check_bill_query (AppropriationCheckBillQueryRequest) returns (AppropriationCheckBillQueryResponse )
+
+    @handler AppropriationCheckBillExcelHandler
+    post /statementofaccount/appropiation_check_bill_excel (AppropriationCheckBillQueryRequest) returns ()
+}

@@ -1,0 +1,105 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type ChannelChangeNotify struct {
+    ID int `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    IsChannelChangeNotify string `json:"isChannelChangeNotify"`
+    NotifyUrl string `json:"notifyUrl"`
+    LastNotifyMessage string `json:"lastNotifyMessage"`
+    Status string `json:"status"`
+    CreatedBy string `json:"createdBy"`
+    UpdatedBy string `json:"updatedBy"`
+}
+
+type MerchantChannelPayTypeLimit {
+    PayType string `json:"payType"`
+    PayTypeName string `json:"payTypeName"`
+    SingleLimitMinimum float64 `json:"singleLimitMinimum"`
+    SingleLimitMaxmum float64 `json:"singleLimitMaxmum"`
+    PayTypeImageUrl string `json:"payTypeImageUrl"`
+    Fixed string `json:"fixed"`
+    Device string `json:"device"`
+    Currency string `json:"currency"`
+}
+
+type MerchantOpenChannel struct {
+    MerchantId string `json:"merchantId"`
+    CurrencyCode string `json:"currency"`
+    MerchantChannelPayTypeLimits []MerchantChannelPayTypeLimit `json:"availablePayTypes"`
+}
+
+type MerchantChannelNotifyRequest {
+    CurrencyCode string `json:"currencyCode"`
+}
+
+type MerchantChannelNotifyQueryRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    ParentMerchantCode string `json:"parentMerchantCode, optional"`
+    ChannelNotify string `json:"channelNotify, optional"`
+    Status string `json:"status, optional"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+}
+
+type MerchantChannelNotifyQuery {
+    MerchantCode string `json:"merchantCode"`
+    ParentMerchantCode string `json:"parentMerchantCode"`
+    NotifyUrl string `json:"notifyUrl"`
+    Content string `json:"content"`
+    NotifyStatus string `json:"notifyStatus"`
+    NotifyFunction string `json:"notifyFunction"`
+}
+
+type MerchantChannelNotifyQueryRepsonse {
+    List []MerchantChannelNotifyQuery `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type MerchantChannelNotifyUpdateRequest {
+    MerchantCode string `json:"merchantCode"`
+    IsChannelChangeNotify string `json:"isChannelChangeNotify"`
+    NotifyUrl string `json:"notifyUrl"`
+}
+
+type MerchantChannelNotifyUpdateResponse {
+    MerchantCode string `json:"merchantCode"`
+    IsChannelChangeNotify string `json:"isChannelChangeNotify"`
+    NotifyUrl string `json:"notifyUrl"`
+    LastNotifyMessage string `json:"lastNotifyMessage"`
+    Status string `json:"status"`
+}
+
+type MerhcantChannelNotifyResendRequest {
+    MerchantCode string `json:"merchantCode"`
+}
+
+
+@server(
+//    jwt : Auth
+    group: merchant
+    prefix: api/v1/merchant
+)
+service boadmin-api {
+    @handler sendNotifyChannelsHandler
+    post /merchantnotify/send (MerchantChannelNotifyRequest)
+
+    @handler MerchantChannelNotifyQueryHandler
+    post /merchantnotify/query (MerchantChannelNotifyQueryRequest) returns (MerchantChannelNotifyQueryRepsonse)
+
+    @handler MerchantChannelNotifyUpdateHandler
+    post /merchantnotify/update (MerchantChannelNotifyUpdateRequest) returns (MerchantChannelNotifyUpdateResponse)
+
+    @handler MerchantChannelNotifyResendHandler
+    post /merchantnotify/resend (MerhcantChannelNotifyResendRequest)
+}
+

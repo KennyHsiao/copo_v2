@@ -1,0 +1,51 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type DownloadCenter {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    UserId int64 `json:"userId"`
+    IsAdmin string `json:"isAdmin"`
+    Status string `json:"status"`
+    ReqParam string `json:"reqParam"`
+    Type string `json:"type"`
+    FilePath string `json:"filePath"`
+    FileName string `json:"fileName"`
+    MissionName string `json:"missionName"`
+}
+
+type DownloadCenterQueryAllRequest {
+    UserId string `json:"userId, optional"`
+    Type string `json:"type, optional"`
+    FileName string `json:"fileName, optional"`
+    MissionName string `json:"missionName, optional"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+    Status string `json:"status, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type DownloadCenterQueryAllResponse {
+    List []DownloadCenter `json:"list"`
+    pageNum int `json:"pageNum" gorm:"-"`
+    pageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: download
+    prefix: api/v1/down
+)
+service boadmin-api {
+    @handler DownloadCenterQueryAllHandler
+    post /query_all (DownloadCenterQueryAllRequest) returns (DownloadCenterQueryAllResponse)
+}

@@ -1,0 +1,110 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type ChannelRule {
+    ID int64 `json:"id"`
+    ChannelName string `json:"channelName"`
+    PayTypeCode string `json:"payTypeCode"`
+    CostomizeChannelName string `json:"costomizeChannelName"`
+    ForeignChannelName string `json:"foreignChannelName"`
+    ChannelPayType string `json:"channelPayType"`
+    ChannelMode string `json:"channelMode"`
+    ChannelModeEn string `json:"channelModeEn"`
+    Remark string `json:"remark"`
+    ChineseAll string `json:"chineseAll"`
+    ChineseShort string `json:"chineseShort"`
+    EnglishAll string `json:"englishAll"`
+    EnglishShort string `json:"englishShort"`
+}
+
+type ChannelRuleCreateRequest {
+    ChannelName string `json:"channelName"`
+    PayTypeCode string `json:"payTypeCode"`
+    CostomizeChannelName string `json:"costomizeChannelName"`
+    ForeignChannelName string `json:"foreignChannelName"`
+    ChannelPayType string `json:"channelPayType"`
+    ChannelMode string `json:"channelMode"`
+    ChannelModeEn string `json:"channelModeEn"`
+    Remark string `json:"remark"`
+    ChineseAll string `json:"chineseAll"`
+    ChineseShort string `json:"chineseShort"`
+    EnglishAll string `json:"englishAll"`
+    EnglishShort string `json:"englishShort"`
+}
+
+type ChannelRuleUpdateRequest {
+    ID int64 `json:"id"`
+    CostomizeChannelName string `json:"costomizeChannelName, optional"`
+    ForeignChannelName string `json:"foreignChannelName, optional"`
+    ChannelPayType string `json:"channelPayType, optional"`
+    ChannelMode string `json:"channelMode, optional"`
+    ChannelModeEn string `json:"channelModeEn, optional"`
+    Remark string `json:"remark, optional"`
+    ChineseAll string `json:"chineseAll, optional"`
+    ChineseShort string `json:"chineseShort, optional"`
+    EnglishAll string `json:"englishAll, optional"`
+    EnglishShort string `json:"englishShort, optional"`
+}
+
+type ChannelRuleQueryRequest {
+    ID int64 `json:"id, optional"`
+    CostomizeChannelName string `json:"costomizeChannelName, optional"`
+    ChannelPayType string `json:"channelPayType, optional"`
+    ChannelMode string `json:"channelMode, optional"`
+    Content string `json:"content, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type ChannelRuleQuery {
+    ID                 int64  `json:"id"`
+    ChannelName string `json:"channelName"`
+    PayTypeCode string `json:"payTypeCode"`
+    CostomizeChannelName string `json:"costomizeChannelName"`
+    ForeignChannelName string `json:"foreignChannelName"`
+    ChannelPayType string `json:"channelPayType"`
+    ChannelMode string `json:"channelMode"`
+    ChannelModeEn string `json:"channelModeEn"`
+    ChineseAll string `json:"chineseAll"`
+    ChineseShort string `json:"chineseShort"`
+    EnglishAll string `json:"englishAll"`
+    EnglishShort string `json:"englishShort"`
+    Remark string `json:"remark"`
+}
+
+type ChannelRuleQueryResponse {
+    List []ChannelRuleQuery `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type ChannelRuleDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+@server(
+    jwt: Auth
+    group: announcementTemp
+    prefix: api/v1/announcement
+)
+service boadmin-api {
+    @handler ChannelRuleQueryHandler
+    post /channelRule/query_all (ChannelRuleQueryRequest) returns (ChannelRuleQueryResponse)
+
+    @handler ChannelRuleCreateHandler
+    post /channelRule/create (ChannelRuleCreateRequest)
+
+    @handler ChannelRuleUpdateHandler
+    post /channelRule/update (ChannelRuleUpdateRequest)
+
+    @handler ChannelRuleDeleteHandler
+    post /channelRule/delete (ChannelRuleDeleteRequest)
+}

@@ -1,0 +1,95 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type Permit {
+    ID int64 `json:"id, optional"`
+    MenuID int64 `json:"menuId, optional"`
+    Slug string `json:"slug, optional"`
+    Name string `json:"name, optional"`
+    NeedPassword bool `json:"needPassword"`
+}
+
+// 新增
+type PermitCreateRequest {
+    ID int64 `json:"id, optional"`
+    MenuID int64 `json:"menuId" validate:"required"`
+    Slug string `json:"slug" validate:"required,lte=16"`
+    Name string `json:"name" validate:"required,lte=32"`
+    NeedPassword bool `json:"needPassword"`
+}
+
+// 批量維護
+type PermitUpsertRequest {
+    MenuID int64 `json:"menuId"`
+    Permits []Permit `json:"permits"`
+}
+
+// 修改
+type PermitUpdateRequest {
+    ID int64 `json:"id"`
+    MenuID int64 `json:"menuId" validate:"required"`
+    Slug string `json:"slug" validate:"required,lte=16"`
+    Name string `json:"name" validate:"required,lte=32"`
+    NeedPassword bool `json:"needPassword"`
+}
+
+// 刪除
+type PermitDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+// 查詢
+type PermitQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type PermitQueryResponse {
+    Permit
+}
+
+type PermitQueryAllRequest {
+    MenuID int64 `json:"menuId, optional"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+}
+
+type PermitQueryAllResponse {
+    List []Permit `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+
+@server(
+    jwt: Auth
+    group:      permit
+    prefix:     api/v1/auth
+)
+service boadmin-api {
+
+    @handler PermitCreateHandler
+    post /permit/create (PermitCreateRequest)
+
+    @handler PermitUpdateHandler
+    post /permit/update (PermitUpdateRequest)
+
+    @handler PermitDeleteHandler
+    post /permit/delete (PermitDeleteRequest)
+
+    @handler PermitQueryHandler
+    post /permit/query (PermitQueryRequest) returns (PermitQueryResponse)
+
+    @handler PermitQueryAllHandler
+    post /permit/query_all (PermitQueryAllRequest) returns (PermitQueryAllResponse)
+
+    @handler PermitUpsertHandler
+    post /permit/batch_upsert (PermitUpsertRequest)
+}

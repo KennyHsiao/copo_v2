@@ -1,0 +1,29 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type TestRequest {
+
+}
+
+type TestResponse {
+
+}
+
+@server(
+    group: test
+    prefix: api/v1/test
+)
+service boadmin-api {
+    @handler HealthCheckHandler
+    get /healthCheck () returns (string)
+
+    @handler TestHandler
+    post /test (TestRequest) returns (TestResponse)
+}

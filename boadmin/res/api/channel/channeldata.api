@@ -1,0 +1,221 @@
+syntax = "v1"
+
+info(
+    title: "渠道資料"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type ChannelData {
+    ID int64 `json:"id, optional"`
+    Code string `json:"code, optional"`
+    Name string `json:"name, optional"`
+    ProjectName string `json:"projectName, optional"`
+    IsProxy string `json:"isProxy, optional"`
+    IsNzPre string `json:"isNzPre, optional"`
+    ApiUrl string `json:"apiUrl, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    ChannelWithdrawCharge float64 `json:"channelWithdrawCharge, optional"`
+    Balance float64 `json:"balance, optional"`
+    BalanceLimit float64 `json:"balanceLimit, optional"`
+    Status string `json:"status, optional"`
+    Device string `json:"device,optional"`
+    MerId string `json:"merId, optional"`
+    MerKey string `json:"merKey, optional"`
+    PayUrl string `json:"payUrl, optional"`
+    PayQueryUrl string `json:"payQueryUrl, optional"`
+    PayQueryBalanceUrl string `json:"payQueryBalanceUrl, optional"`
+    ProxyPayUrl string `json:"proxyPayUrl, optional"`
+    ProxyPayQueryUrl string `json:"proxyPayQueryUrl, optional"`
+    ProxyPayQueryBalanceUrl string `json:"proxyPayQueryBalanceUrl, optional"`
+    WhiteList string `json:"whiteList, optional"`
+    PayTypeMapList []PayTypeMap `json:"payTypeMapList, optional" gorm:"-"`
+    PayTypeMap string `json:"payTypeMap, optional"`
+    ChannelPayTypeList []ChannelPayType `json:"channelPayTypeList, optional" gorm:"foreignKey:ChannelCode;references:Code"`
+    ChannelPort string `json:"channelPort, optional"`
+    WithdrawBalance float64 `json:"withdrawBalance, optional"`
+    proxypayBalance float64 `json:"proxypayBalance, optional"`
+    BankCodeMapList []BankCodeMap `json:"bankCodeMapList, optional" gorm:"-"`
+    Banks []Bank `json:"banks, optional" gorm:"many2many:ch_channel_banks;foreignKey:Code;joinForeignKey:channel_code;references:bank_no;joinReferences:bank_no"`
+}
+
+//type PayTypeMap {
+//    Code string `json:"code"`
+//    Type string `json:"type"`
+//}
+//type JSON json.RawMessage
+
+type ChannelDataCreateRequest {
+    Code string `json:"code, optional"`
+    Name string `json:"name" valiate: "required"`
+    ProjectName string `json:"projectName, optional"`
+    IsProxy string `json:"isProxy" valiate: "required"`
+    IsNZPre string `json:"isNzPre" valiate: "required"`
+    ApiUrl string `json:"apiUrl, optional"`
+    CurrencyCode string `json:"currencyCode" valiate: "required"`
+    ChannelWithdrawCharge float64 `json:"channelWithdrawCharge, optional"`
+    Balance float64 `json:"balance, optional"`
+    BalanceLimit float64 `json:"balanceLimit, optional"`
+    Status string `json:"status, optional"`
+    Device string `json:"device,optional"`
+    CreatedAt string `json:"createdAt, optional"`
+    UpdatedAt string `json:"updatedAt, optional"`
+    MerId string `json:"merId, optional"`
+    MerKey string `json:"merKey , optional"`
+    PayUrl string `json:"payUrl, optional"`
+    PayQueryUrl string `json:"payQueryUrl, optional"`
+    PayQueryBalanceUrl string `json:"payQueryBalanceUrl, optional"`
+    ProxyPayUrl string `json:"proxyPayUrl, optional"`
+    ProxyPayQueryUrl string `json:"proxyPayQueryUrl, optional"`
+    ProxyPayQueryBalanceUrl string `json:"proxyPayQueryBalanceUrl, optional"`
+    WhiteList string `json:"whiteList, optional"`
+    PayTypeMapList []PayTypeMap `json:"payTypeMapList, optional" gorm:"-"`
+    PayTypeMap string `json:"payTypeMap, optional"`
+    ChannelPayTypeList []ChannelPayType `json:"channelPayTypeList, optional" gorm:"foreignKey:ChannelCode;references:Code"`
+    ChannelPort string `json:"channelPort, optional"`
+    withdrawBalance float64 `json:"withdrawBalance, optional"`
+    proxypayBalance float64 `json:"proxypayBalance, optional"`
+    BankCodeMapList []BankCodeMap `json:"bankCodeMapList, optional" gorm:"-"`
+    Banks []Bank `json:"banks, optional" gorm:"many2many:ch_channel_banks;foreignKey:Code;joinForeignKey:channel_code;references:bank_no;joinReferences:bank_no"`
+}
+
+type BankCodeMap struct {
+    ID          int64 `json:"id, optional"`
+    ChannelCode string `json:"channelCode, optional"`
+    BankNo      string `json:"bankNo"`
+    MapCode     string `json:"mapCode"`
+}
+
+type PayTypeMap {
+    ID      int64  `json:"id, optional"`
+    PayType string `json:"payType"`
+    TypeNo string  `json:"typeNo"`
+    MapCode string `json:"mapCode"`
+}
+
+type ChannelDataUpdateRequest {
+    ID int64 `json:"id, optional"`
+    Code string `json:"code" valiate: "required"`
+    Name string `json:"name" valiate: "required"`
+    ProjectName string `json:"projectName" valiate: "required"`
+    IsProxy string `json:"isProxy" valiate: "required"`
+    IsNZPre string `json:"isNzPre" valiate: "required"`
+    ApiUrl string `json:"apiUrl, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    ChannelWithdrawCharge float64 `json:"channelWithdrawCharge, optional"`
+    Balance float64 `json:"balance, optional"`
+    BalanceLimit float64 `json:"balanceLimit, optional"`
+    Status string `json:"status, optional"`
+    CreatedAt string `json:"createdAt, optional"`
+    UpdatedAt string `json:"updatedAt, optional"`
+    Device string `json:"device,optional"`
+    MerId string `json:"merId, optional"`
+    MerKey string `json:"merKey , optional"`
+    PayUrl string `json:"payUrl, optional"`
+    PayQueryUrl string `json:"payQueryUrl, optional"`
+    PayQueryBalanceUrl string `json:"payQueryBalanceUrl, optional"`
+    ProxyPayUrl string `json:"proxyPayUrl, optional"`
+    ProxyPayQueryUrl string `json:"proxyPayQueryUrl, optional"`
+    ProxyPayQueryBalanceUrl string `json:"proxyPayQueryBalanceUrl, optional"`
+    WhiteList string `json:"whiteList, optional"`
+    PayTypeMapList []PayTypeMap `json:"payTypeMapList, optional" gorm:"-"`
+    PayTypeMap string `json:"payTypeMap, optional"`
+    ChannelPayTypeList []ChannelPayType `json:"channelPayTypeList, optional" gorm:"foreignKey:ChannelCode;references:Code"`
+    ChannelPort string `json:"channelPort, optional"`
+    withdrawBalance float64 `json:"withdrawBalance, optional"`
+    proxypayBalance float64 `json:"proxypayBalance, optional"`
+    BankCodeMapList []BankCodeMap `json:"bankCodeMapList, optional" gorm:"-"`
+    Banks []Bank `json:"banks, optional" gorm:"many2many:ch_channel_banks;foreignKey:Code;joinForeignKey:channel_code;references:bank_no;joinReferences:bank_no"`
+}
+type ChannelDataDeleteRequest {
+    ID int64 `json:"id, optional"`
+    Code string `json:"code",valiate: "required"`
+}
+type ChannelDataQueryRequest {
+    ID int64 `json:"id, optional"`
+    Code string `json:"code",valiate: "required"`
+    CurrencyCode string `json:"currencyCode",valiate: "required"`
+}
+type ChannelDataQueryResponse {
+    ChannelData
+}
+
+type ChannelDataQueryAllRequest {
+    Code string `json:"code,optional"`
+    Name string `json:"name,optional"`
+    CurrencyCode string `json:"currencyCode,optional"`
+    Status string `json:"status, optional"`
+    IsProxy string `json:"isProxy, optional"`
+    Device string `json:"device,optional"`
+    PageNum int `json:"pageNum" gorm:"-"` //gorm:"-" 忽略這參數檢查是否有給
+    PageSize int `json:"pageSize" gorm:"-"`
+}
+
+type ChannelDataQueryAllResponse {
+    List [] ChannelData `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type ChannelDataGetDropDownListRequest {
+    Code string `json:"code,optional"`
+    Name string `json:"name,optional"`
+    Status []string `json:"status,optional"`
+    CurrencyCode string `json:"currencyCode,optional"`
+}
+
+type ChannelDataQueryForBKProxyRequest {
+    CurrencyCode string `json:"currencyCode"`
+    Status []string `json:"status"`
+}
+
+type ChannelDataQueryForBKProxyResponse {
+    List [] ChannelData `json:"list"`
+}
+
+type ChannelDataDropDownItem {
+    id string `json:"id"`
+    code string `json:"code"`
+    name string `json:"name"`
+}
+
+type ChannelCodeAndHandlingFee {
+    Code string `json:"channelCode"`
+    ChannelWithdrawCharge string `json:"channelWithdrawCharge,optional"`
+    Name string `json:"name"`
+    Fee string `json:"fee,optional"`
+    HandlingFee string `json:"handlingFee,optional"`
+    IsRate string `json:"isRate,optional"`
+}
+
+@server(
+    jwt: Auth
+    group: channeldata
+    prefix: api/v1/channel
+)
+
+service boadmin-api {
+    @handler ChannelDataCreateHandler
+    post /channeldata/create (ChannelDataCreateRequest)
+
+    @handler ChannelDataUpdateHandler
+    post /channeldata/update (ChannelDataUpdateRequest)
+
+    @handler ChannelDataDeleteHandler
+    post /channeldata/delete (ChannelDataDeleteRequest)
+
+    @handler ChannelDataQueryHandler
+    post /channeldata/query (ChannelDataQueryRequest) returns (ChannelDataQueryResponse)
+
+    @handler ChannelDataQueryAllHandler
+    post /channeldata/queryall (ChannelDataQueryAllRequest) returns (ChannelDataQueryAllResponse)
+
+    @handler ChannelDataGetDropDownList
+    post /channeldata/get_drop_down_list (ChannelDataGetDropDownListRequest) returns ([]ChannelDataDropDownItem)
+
+    @handler ChannelDataQueryForBKProxyHandler
+    post /channeldata/query_for_bk (ChannelDataQueryForBKProxyRequest) returns (ChannelDataQueryForBKProxyResponse)
+}

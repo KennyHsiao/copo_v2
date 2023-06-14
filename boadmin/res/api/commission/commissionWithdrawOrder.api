@@ -1,0 +1,72 @@
+syntax = "v1"
+
+info(
+    title: "傭金出款單"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type CommissionWithdrawOrder {
+    ID int64 `json:"id, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    WithdrawCurrencyCode string `json:"withdrawCurrencyCode, optional"`
+    PayCurrencyCode string `json:"payCurrencyCode, optional"`
+    WithdrawAmount float64 `json:"withdrawAmount, optional"`
+    ExchangeRate float64 `json:"exchangeRate, optional"`
+    PayAmount float64 `json:"payAmount, optional"`
+    AfterCommission float64 `json:"afterCommission, optional"`
+    Remark string `json:"remark, optional"`
+    AttachmentPath string `json:"attachmentPath, optional"`
+    PayAt string `json:"payAt, optional"`
+    CreatedBy string `json:"createdBy, optional"`
+}
+
+type CommissionWithdrawOrderQueryAllRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    WithdrawCurrencyCode string `json:"withdrawCurrencyCode, optional"`
+    PayCurrencyCode string `json:"payCurrencyCode, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type CommissionWithdrawOrderQueryAllResponse {
+    List []CommissionWithdrawOrder `json:"list"`
+    TotalWithdrawAmount float64 `json:"totalWithdrawAmount"`
+    TotalPayAmount float64 `json:"totalPayAmount"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type CommissionWithdrawOrderCreateRequest {
+    OrderNo string `form:"orderNo, optional"`
+    MerchantCode string `form:"merchantCode, optional"`
+    WithdrawCurrencyCode string `form:"withdrawCurrencyCode, optional"`
+    PayCurrencyCode string `form:"payCurrencyCode, optional"`
+    WithdrawAmount float64 `form:"withdrawAmount, optional"`
+    ExchangeRate float64 `form:"exchangeRate, optional"`
+    PayAmount float64 `form:"payAmount, optional"`
+    Remark string `form:"remark, optional"`
+    AttachmentPath string `form:"attachmentPath, optional"`
+    PayAt string `form:"payAt, optional"`
+}
+
+
+@server(
+    jwt: Auth
+    group: commissionWithdrawOrder
+    prefix: api/v1/commission
+)
+service boadmin-api {
+    @handler CommissionWithdrawOrderQueryAllHandler
+    post /withdraw_order/query_all (CommissionWithdrawOrderQueryAllRequest) returns (CommissionWithdrawOrderQueryAllResponse)
+
+    @handler CommissionWithdrawOrderCreateHandler
+    post /withdraw_order/create (CommissionWithdrawOrderCreateRequest)
+}

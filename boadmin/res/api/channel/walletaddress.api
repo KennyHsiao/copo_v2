@@ -1,0 +1,113 @@
+syntax = "v1"
+
+info(
+    title: "渠道錢包地址"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type WalletAddress {
+    ID int64 `json:"id"`
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+    ChannelCode string `json:"channelCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    Account string `json:"account"`
+    Address string `json:"address"`
+    Status string `json:"status"`
+    Balance float64 `json:"balance"`
+    OrderNo string `json:"orderNo"`
+    PrivateKey string `json:"privateKey"`
+    Remark string `json:"remark"`
+}
+
+type WalletAddressCreateRequest {
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+    ChannelCode string `json:"channelCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    Account string `json:"account, optional"`
+    Address string `json:"address"`
+    PrivateKey string `json:"privateKey, optional"`
+    Remark string `json:"remark, optional"`
+}
+
+type WalletAddressUpdateRequest {
+    ID int64 `json:"id"`
+    Account string `json:"account, optional"`
+    Address string `json:"address, optional"`
+    Status string `json:"status, optional"`
+    PrivateKey string `json:"privateKey, optional"`
+    Remark string `json:"remark, optional"`
+}
+
+type WalletAddressUpdateStatusRequest {
+    ID int64 `json:"id"`
+    Status string `json:"status, optional"`
+}
+
+type WalletAddressDeleteRequest {
+    ID int64 `json:"id"`
+}
+type WalletAddressQueryRequest {
+    ID int64 `json:"id"`
+}
+type WalletAddressQueryResponse {
+    WalletAddress
+}
+
+type WalletAddressQueryAllRequest {
+    ChannelPayTypesCode string `json:"channelPayTypesCode, optional"`
+    ChannelCode string `json:"channelCode, optional"`
+    PayTypeCode string `json:"payTypeCode, optional"`
+    Account string `json:"account, optional"`
+    Address string `json:"address, optional"`
+    Status string `json:"status, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"` //gorm:"-" 忽略這參數檢查是否有給
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type WalletAddressQueryAllResponse {
+    List []WalletAddress `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type GenerateKeyPairRequest {
+
+}
+type GenerateKeyPairResponse {
+
+}
+
+
+@server(
+    jwt: Auth
+    group: walletaddress
+    prefix: api/v1/channel
+)
+service boadmin-api {
+    @handler WalletAddressCreateHandler
+    post /walletaddress/create (WalletAddressCreateRequest)
+
+    @handler WalletAddressUpdateHandler
+    post /walletaddress/update (WalletAddressUpdateRequest)
+
+    @handler WalletAddressUpdateStatusHandler
+    post /walletaddress/update_status (WalletAddressUpdateStatusRequest)
+
+    @handler WalletAddressDeleteHandler
+    post /walletaddress/delete (WalletAddressDeleteRequest)
+
+    @handler WalletAddressQueryHandler
+    post /walletaddress/query (WalletAddressQueryRequest) returns (WalletAddressQueryResponse)
+
+    @handler WalletAddressQueryAllHandler
+    post /walletaddress/query_all (WalletAddressQueryAllRequest) returns (WalletAddressQueryAllResponse)
+
+    @handler GenerateKeyPairHandler
+    post /walletaddress/generate_key_pair (GenerateKeyPairRequest) returns (GenerateKeyPairResponse)
+
+}

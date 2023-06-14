@@ -1,0 +1,52 @@
+syntax = "v1"
+
+info(
+    title: "交易日志"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type TxLog {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    MerchantOrderNo string `json:"merchantOrderNo, optional"`
+    ChannelOrderNo string `json:"channelOrderNo, optional"`
+    LogType string `json:"logType, optional"`
+    LogSource string `json:"logSource, optional"`
+    Content string `json:"content, optional"`
+    Log string `json:"log, optional"`
+    CreatedAt string `json:"createdAt, optional"`
+    ErrorCode string `json:"errorCode, optional"`
+    ErrorMsg string `json:"errorMsg, optional"`
+    TraceId string `json:"traceId, optional"`
+}
+
+
+type OrderLogQueryAllRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    MerchantOrderNo string `json:"merchantOrderNo, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    LogType []string `json:"logType, optional"`
+    LogSource string `json:"logSource, optional"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+    PageNum int `json:"pageNum" gorm:"-"` //gorm:"-" 忽略這參數檢查是否有給
+    PageSize int `json:"pageSize" gorm:"-"`
+}
+
+type OrderLogQueryAllResponse {
+    List [] TxLog `json:"list"`
+}
+
+@server(
+    jwt: Auth
+    group: orderlog
+    prefix: api/v1/transaction
+)
+service boadmin-api {
+    @handler TransactionLogQueryAllHandler
+    post /orderlog/query_all (OrderLogQueryAllRequest) returns (OrderLogQueryAllResponse)
+}

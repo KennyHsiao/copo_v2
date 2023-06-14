@@ -1,0 +1,117 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+// 撥款紀錄
+type AllocRecord {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    AgentLayerCode string `json:"agentLayerCode"`
+    OrderNo string `json:"orderNo"`
+    MerchantOrderNo string `json:"merchantOrderNo"`
+    MerchantBankName string `json:"merchantBankNo"`
+    MerchantBankProvince string `json:"merchantBankProvince"`
+    MerchantBankCity string `json:"merchantBankCity"`
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    MerchantAccountName string `json:"merchantAccountName"`
+    Source string `json:"source"`
+    IsMerchantCallback string `json:"isMerchantCallback"`
+    IsTest string `json:"isTest"`
+    CurrencyCode string `json:"currencyCode"`
+    Type string `json:"type"`
+    ChannelCode string `json:"channelCode"`
+    ChannelName string `json:"channelName"`
+    OrderAmount float64 `json:"orderAmount"`
+    TransferAmount float64 `json:"transferAmount"`
+    TransferHandlingFee float64 `json:"transferHandlingFee"`
+    HandlingFee float64 `json:"handlingFee"`
+    Fee float64 `json:"fee"`
+    BeforeBalance float64 `json:"beforeBalance"`
+    Balance float64 `json:"balance"`
+    Status string `json:"status"`
+    Memo string `json:"memo"`
+    ErrorNote string `json:"errorNote"`
+    CreatedAt string `json:"createdAt"`
+    CreatedBy string `json:"createdBy"`
+    ReviewedBy string `json:"reviewedBy"`
+    ProfitAmount float64 `json:"profitAmount"`
+    AgentParentCode string `json:"agentParentCode"`
+    ChangeType string `json:"changeType"`
+}
+
+// 查詢撥款紀錄 tx_order
+type AllocRecordQueryAllRequest {
+    OrderNo string `json:"orderNo, optional"`
+    DateType string `json:"dateType, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    Status string `json:"status, optional"`
+    Type string `json:"type, optional"`
+    ChannelName string `json:"channelName, optional"`
+    ChannelCode string `json:"channelCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    Source string `json:"source, optional"`
+    ReportType string `json:"reportType, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type BKProxyCreateRequeset {
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    MerchantBankNo string `json:"merchantBankNo"`
+    MerchantBankName string `json:"merchantBankName, optional"`
+    MerchantAccountName string `json:"merchantAccountName"`
+    MerchantBankProvince string `json:"merchantBankProvince, optional"`
+    MerchantBankCity string `json:"merchantBankCity, optional"`
+    CurrencyCode string `json:"currencyCode"`
+    OrderAmount float64 `json:"orderAmount"`
+    ChannelCode string `json:"channelCode"`
+}
+
+
+// 撥款紀錄 tx_order
+type AllocRecordQueryAllResponse {
+    List []AllocRecord `json:"list"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type AllocRecordTotalInfoResponse {
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalTransferHandlingFee float64 `json:"totalTransferHandlingFee"`
+}
+
+// 確認撥款
+type ConfirmAllocOrderRequest {
+    OrderNo string `json:"orderNo"`
+    Comment string `json:"comment, optional"`
+}
+
+@server(
+    jwt: Auth
+    group: allocorder
+    prefix: api/v1/transaction
+)
+service boadmin-api {
+    @handler AllocRecordCreateHandler
+    post /allocorder/create (BKProxyCreateRequeset) returns (string)
+
+    @handler AllocRecordQueryAllHandler
+    post /allocorder/record_query_all (AllocRecordQueryAllRequest) returns (AllocRecordQueryAllResponse)
+
+    @handler AllocRecordExcelHandler
+    post /allocorder/record_excel (AllocRecordQueryAllRequest) returns (AllocRecordQueryAllResponse)
+
+    @handler AllocRecordTotalInfoHandler
+    post /allocorder/record_total_info (AllocRecordQueryAllRequest) returns (AllocRecordTotalInfoResponse)
+
+    @handler ConfirmAllocOrderHandler
+    post /allocorder/confirm_order (ConfirmAllocOrderRequest)
+}

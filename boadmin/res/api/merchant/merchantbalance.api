@@ -1,0 +1,106 @@
+syntax = "v1"
+
+info (
+    title: "商戶錢包"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type MerchantBalance {
+    ID  int64 `json:"id, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    BalanceType  string `json:"balanceType, optional"  validate:"required"`
+    Balance      float64 `json:"balance"`
+    FrozenAmount float64 `json:"frozenAmount, optional"`
+}
+
+
+// 新增
+type MerchantBalanceCreateRequest struct {
+    ID           int64   `json:"id, optional"`
+    MerchantCode string  `json:"merchantCode, optional" validate:"required"`
+    CurrencyCode string  `json:"currencyCode, optional" validate:"required"`
+    BalanceType  string `json:"balanceType, optional"  validate:"required"`
+    Balance      float64 `json:"balance"`
+    FrozenAmount float64 `json:"frozenAmount, optional"`
+    Commission   float64 `json:"commission, optional"`
+}
+
+// 異動錢包金額
+type MerchantBalanceUpdateRequest {
+    MerchantCode string `json:"merchantCode"`
+    CurrencyCode string `json:"currencyCode"`
+    BalanceType string `json:"balanceType"`
+    Comment string `json:"comment"`
+    Amount float64 `json:"amount"`
+}
+
+// 異動凍結金額
+type MerchantFrozenUpdateRequest {
+    MerchantCode string `json:"merchantCode"`
+    CurrencyCode string `json:"currencyCode"`
+    BalanceType string `json:"balanceType"`
+    Comment string `json:"comment"`
+    Amount float64 `json:"amount"`
+    MerchantPtBalanceId int64 `json:"merchantPtBalanceId, optional"`
+}
+
+type MerchantBalanceDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+// 查詢
+type MerchantBalanceQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type MerchantBalanceQueryResponse {
+    MerchantBalance
+}
+
+// 分頁查詢
+type MerchantBalanceQueryAllRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    BalanceType string `json:"balanceType, optional"`
+    Status string `json:"status, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantBalanceQueryAllResponse {
+    List []MerchantBalance `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group:      merchantbalance
+    prefix:     api/v1/merchant
+)
+service boadmin-api {
+
+    @handler MerchantBalanceCreateHandler
+    post /merchantbalance/create (MerchantBalanceCreateRequest)
+
+    @handler MerchantBalanceUpdateHandler
+    post /merchantbalance/update_balance (MerchantBalanceUpdateRequest)
+
+    @handler MerchantFrozenUpdateHandler
+    post /merchantbalance/update_frozen (MerchantFrozenUpdateRequest)
+
+    @handler MerchantBalanceDeleteHandler
+    post /merchantbalance/delete (MerchantBalanceDeleteRequest)
+
+    @handler MerchantBalanceQueryHandler
+    post /merchantbalance/query (MerchantBalanceQueryRequest) returns (MerchantBalanceQueryResponse)
+
+    @handler MerchantBalanceQueryAllHandler
+    post /merchantbalance/query_all (MerchantBalanceQueryAllRequest) returns (MerchantBalanceQueryAllResponse)
+
+}

@@ -1,0 +1,57 @@
+type LoginRequest {
+    Account string `json:"account" validate:"required,alphanumLength=6/12"`
+    Password string `json:"password" validate:"required,alphanumLength=8/16"`
+    Otp string `json:"otp,optional"`
+}
+
+type LoginResponse {
+    Jwt JwtToken `json:"jwt"`
+}
+
+type JwtToken {
+    AccessToken  string `json:"access_token"`
+    AccessExpire int64  `json:"access_expire"`
+    RefreshAfter int64  `json:"refresh_after"`
+}
+
+type OtpValidRequest {
+    Otp string `json:"otp"`
+}
+
+type OtpValidResponse {
+    Valid bool `json:"valid"`
+}
+
+type OtpCheckRequest {
+    Account string `json:"account, optional"`
+    Otp string `json:"otp"`
+}
+
+
+@server(
+    group:      login
+    prefix:     api/v1/auth
+)
+service boadmin-api {
+    @handler LoginHandler
+    post /login(LoginRequest) returns (LoginResponse)
+}
+
+@server(
+    jwt: Auth
+    group: login
+    prefix: api/v1/auth
+)
+service boadmin-api {
+    @handler OtpValidHandler
+    post /otp/valid(OtpValidRequest) returns (OtpValidResponse)
+}
+
+@server(
+    group: login
+    prefix: api/v1/auth
+)
+service boadmin-api {
+    @handler OtpCheckHandler
+    post /otp/check(OtpCheckRequest)
+}

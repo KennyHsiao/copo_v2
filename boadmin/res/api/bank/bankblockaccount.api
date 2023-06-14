@@ -1,0 +1,85 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "Eddie"
+    email: "eddie@e-pay.vip"
+    version: "type version here"
+)
+
+type BankBlockAccount {
+    ID int64 `json:"id"`
+    BankAccount string `json:"bankAccount"`
+    BankNo string `json:"bankNo"`
+    Memo string `json:"memo"`
+    CreatedAt string `json:"createdAt"`
+    Name string `json:"name"`
+}
+
+//新增
+type BankBlockAccountCreateRequest {
+    BankAccount string `json:"bankAccount" validate: "required"`
+    Name string `json:"name" validate: "required"`
+    Memo string `json:"memo"`
+}
+
+//修改
+type BankBlockAccountUpdateRequest {
+    ID int64 `json:"id"`
+    BankAccount string `json:"bankAccount" validate: "required"`
+    Name string `json:"name" validate: "required"`
+    Memo string `json:"memo"`
+}
+
+//刪除
+type BankBlockAccountDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+//查詢
+type BankBlockAccountQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type BankBlockAccountQueryResponse {
+    BankBlockAccount
+}
+
+type BankBlockAccountQueryAllRequest {
+    BankAccount string `json:"bankAccount, optional"`
+    Name string `json:"name, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+}
+
+type BankBlockAccountQueryAllResponse {
+    List []BankBlockAccount `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: bankblockaccount
+    prefix: api/v1/bank
+)
+service boadmin-api {
+    @handler BankBlockAccountCreateHandler
+    post /blockaccount/create (BankBlockAccountCreateRequest)
+
+    @handler BankBlockAccountUpdateHandler
+    post /blockaccount/update (BankBlockAccountUpdateRequest)
+
+    @handler BankBlockAccountDeleteHandler
+    post /blockaccount/delete (BankBlockAccountDeleteRequest)
+
+    @handler BankBlockAccountQueryHandler
+    post /blockaccount/query (BankBlockAccountQueryRequest) returns (BankBlockAccountQueryResponse)
+
+    @handler BankBlockAccountQueryAllHandler
+    post /blockaccount/query_all (BankBlockAccountQueryAllRequest) returns (BankBlockAccountQueryAllResponse)
+}

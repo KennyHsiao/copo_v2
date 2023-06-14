@@ -1,0 +1,75 @@
+syntax = "v1"
+
+info(
+    title: "語系"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type LanguageCreateRequest {
+    Code string `json:"code" valiate:"required,lte=2"`
+    Name string `json:"name" valiate:"required,lte=16"`
+}
+
+type LanguageUpdateRequest{
+    ID   string `json:"id"`
+    Code string `json:"code" valiate:"required,lte=2"`
+    Name string `json:"name" valiate:"required,lte=16"`
+}
+
+type LanguageQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type LanguageDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+type Language {
+    ID int64 `json:"id"`
+    Code string `json:"code"`
+    Name string `json:"name"`
+}
+
+type LanguageQueryResponse {
+    Language
+}
+
+type LanguageQueryAllRequest {
+    Code string `json:"code ,optional"`
+    Name string `json:"name,optional"`
+    PageNum int `json:"pageNum" gorm:"-"` //gorm:"-" 忽略這參數檢查是否有給
+    PageSize int `json:"pageSize" gorm:"-"`
+}
+
+type LanguageQueryAllResponse {
+    List []Language `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: language
+    prefix: api/v1/basic
+)
+
+service boadmin-api {
+    @handler LanguageCreateHandler
+    post /language/create (LanguageCreateRequest)
+
+    @handler LanguageUpdateHandler
+    post /language/update (LanguageUpdateRequest)
+
+    @handler LanguageDeleteHandler
+    post /language/delete (LanguageDeleteRequest)
+
+    @handler LanguageQueryHandler
+    post /language/query (LanguageQueryRequest) returns (LanguageQueryResponse)
+
+    @handler LanguageQueryAllHandler
+    post /language/query_all (LanguageQueryAllRequest) returns (LanguageQueryAllResponse)
+}

@@ -1,0 +1,501 @@
+syntax = "v1"
+
+info(
+    title: "訂單記錄相關功能"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+// 收款紀錄 tx_order
+type ReceiptRecord {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    OrderNo string `json:"orderNo"`
+    MerchantOrderNo string `json:"merchantOrderNo"`
+    ChannelOrderNo string `json:"channelOrderNo"`
+    Type string `json:"type"`
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+    ChannelCode string `json:"channelCode"`
+    ChannelName string `json:"channelName"`
+    PayTypeCode string `json:"payTypeCode"`
+    CurrencyCode string `json:"currencyCode"`
+    BalanceType string `json:"balanceType"`
+    OrderAmount float64 `json:"orderAmount"`
+    ActualAmount float64 `json:"actualAmount"` // 实际金额
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    MerchantBankAccountLastFive string `json:"merchantBankAccountLastFive"`
+    MerchantBankName string `json:"merchantBankName"`
+    MerchantAccountName string `json:"merchantAccountName"`
+    ChannelBankAccount string `json:"channelBankAccount"`
+    ChannelAccountName string `json:"channelAccountName"`
+    PayTypeName string `json:"payTypeName"`
+    TransferAmount float64 `json:"transferAmount"`
+    TransferHandlingFee float64 `json:"transferHandlingFee"`
+    HandlingFee float64 `json:"handlingFee"`
+    Fee float64 `json:"fee"`
+    Status string `json:"status"`
+    ReasonType string `json:"reasonType"`
+    CallBackStatus string `json:"callBackStatus"`
+    IsMerchantCallback string `json:"isMerchantCallback"`
+    IsLock string `json:"isLock"`
+    IsTest string `json:"isTest"`
+    Memo string `json:"memo"`
+    InternalChargeOrderPath string `json:"internalChargeOrderPath"`
+    TransAt string `json:"transAt"`
+    CreatedAt string `json:"createdAt"`
+    ProfitAmount float64 `json:"profitAmount"`
+    AgentLayerCode string `json:"agentLayerCode"`
+    AgentParentCode string `json:"agentParentCode"`
+}
+
+// 出款紀錄
+type DeductRecord {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    AgentLayerCode string `json:"agentLayerCode"`
+    OrderNo string `json:"orderNo"`
+    MerchantOrderNo string `json:"merchantOrderNo"`
+    MerchantBankName string `json:"merchantBankNo"`
+    MerchantBankProvince string `json:"merchantBankProvince"`
+    MerchantBankCity string `json:"merchantBankCity"`
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    MerchantAccountName string `json:"merchantAccountName"`
+    Source string `json:"source"`
+    IsMerchantCallback string `json:"isMerchantCallback"`
+    IsTest string `json:"isTest"`
+    CurrencyCode string `json:"currencyCode"`
+    Type string `json:"type"`
+    ChannelCode string `json:"channelCode"`
+    OrderChannels []OrderChannels `json:"orderChannels, optional" gorm:"foreignKey:OrderNo;references:OrderNo"`
+    ChannelName string `json:"channelName"`
+    OrderAmount float64 `json:"orderAmount"`
+    TransferAmount float64 `json:"transferAmount"`
+    TransferHandlingFee float64 `json:"transferHandlingFee"`
+    HandlingFee float64 `json:"handlingFee"`
+    Fee float64 `json:"fee"`
+    BeforeBalance float64 `json:"beforeBalance"`
+    Balance float64 `json:"balance"`
+    Status string `json:"status"`
+    Memo string `json:"memo"`
+    ErrorNote string `json:"errorNote"`
+    CreatedAt string `json:"createdAt"`
+    ReviewedBy string `json:"reviewedBy"`
+    ProfitAmount float64 `json:"profitAmount"`
+    AgentParentCode string `json:"agentParentCode"`
+    ChangeType string `json:"changeType"`
+}
+
+// 下發明細
+type IssueDetailRecord {
+    OrderNo string `json:"orderNo"`
+    MerchantCode string `json:"merchantCode"`
+    name string `json:"name"`
+    OrderAmount float64 `json:"orderAmount"`
+    Memo string `json:"memo"`
+    CreatedAt string `json:"createdAt"`
+    TransAt string `json:"transAt"`
+}
+
+// 收支紀錄
+type IncomeExpenseRecord {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    CurrencyCode string `json:"currencyCode"`
+    OrderNo string `json:"orderNo"`
+    MerchantOrderNo string `json:"merchantOrderNo"`
+    OrderType string `json:"orderType"`
+    ChannelCode string `json:"channelCode"`
+    ChannelName string `json:"channelName"`
+    PayTypeCode string `json:"payTypeCode"`
+    PayTypeName string `json:"payTypeName"`
+    TransactionType string `json:"transactionType"`
+    BalanceType string `json:"balanceType"`
+    BeforeBalance float64 `json:"beforeBalance"`
+    TransferAmount float64 `json:"transferAmount"`
+    AfterBalance float64 `json:"afterBalance"`
+    Comment string `json:"comment"`
+    CreatedBy string `json:"createdBy"`
+    CreatedAt string `json:"createdAt"`
+    OrderAmount float64 `json:"orderAmount"`
+}
+// 子錢包紀錄
+type PtBalanceRecord {
+    ID int64 `json:"id, optional"`
+    MerchantPtBalanceId int64 `json:"merchantPtBalanceId"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    OrderNo string `json:"orderNo"`
+    MerchantOrderNo string `json:"merchantOrderNo"`
+    ChannelCode string `json:"channelCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    TransactionType string `json:"transactionType"`
+    BeforeBalance float64 `json:"beforeBalance"`
+    TransferAmount float64 `json:"transferAmount"`
+    AfterBalance float64 `json:"afterBalance"`
+    Comment string `json:"comment"`
+    CreatedBy string `json:"createdBy"`
+    ChannelName string `json:"channelName"`
+    PayTypeName string `json:"payTypeName"`
+    WalletName  string `json:"walletName"`
+}
+
+// 人工還款訂單狀態
+type PersonalRepayment {
+    ID int64 `json:"id"`
+    OrderNo string `json:"orderNo"`
+    MerchantOrderNo string `json:"merchantOrderNo"`
+    ChannelCode string `json:"channelCode"`
+    MerchantBankAccount string `json:"merchantBankAccount"`
+    MerchantAccountName string `json:"merchantAccountName"`
+    MerchantBankNo string `json:"merchantBankNo"`
+    MerchantBankProvince string `json:"merchantBankProvince"`
+    MerchantBankCity string `json:"merchantBankCity"`
+    TransferAmount string `json:"transferAmount"`
+    Source string `json:"source"`
+    CreatedAt string `json:"createdAt"`
+    TransAt string `json:"transAt"`
+    PersonProcessStatus string `json:"personProcessStatus"`
+    ErrorNote string `json:"errorNote"`
+}
+
+type FrozenRecord {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    OrderNo string `json:"orderNo"`
+    MerchantOrderNo string `json:"merchantOrderNo"`
+    ChannelCode string `json:"channelCode"`
+    ChannelName string `json:"channelName"`
+    PayTypeCode string `json:"payTypeCode"`
+    PayTypeName string `json:"payTypeName"`
+    FrozenAmount float64 `json:"frozenAmount"`
+    Memo string `json:"memo"`
+    UpdatedBy string `json:"updatedBy"`
+    CurrencyCode string `json:"currencyCode"`
+    Type string `json:"type"`
+    Status string `json:"status"`
+}
+
+// 冲正
+type ReversalRecordRequest {
+    OrderNo string `json:"orderNo"`
+    Memo string `json:"memo, optional"`
+}
+
+// 查询收款紀錄 tx_order
+type ReceiptRecordQueryAllRequest {
+    JwtMerchantCode string `json:"jwtMerchantCode, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    MerchantOrderNo string `json:"merchantOrderNo, optional"`
+    DateType string `json:"dateType, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    Status []string `json:"status, optional"`
+    Type string `json:"type, optional"`
+    PayTypeCode string `json:"payTypeCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    ReasonTypes []string `json:"reasonTypes, optional"`
+    ChannelName string `json:"channelName, optional"`
+    ReportType string `json:"reportType, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+// 收款紀錄 tx_order
+type ReceiptRecordQueryAllResponse {
+    List []ReceiptRecord `json:"list"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+// 查询收支紀錄
+type IncomeExpenseQueryRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    OrderType string `json:"orderType, optional"`
+    MerchantOrderNo string `json:"merchantOrderNo, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    TransactionType string `json:"transactionType, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    BalanceType string `json:"balanceType, optional"`
+    ChannelName string `json:"channelName, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+// 收支紀錄
+type IncomeExpenseQueryResponse {
+    List []IncomeExpenseRecord `json:"list"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+// 查询子錢包紀錄
+type PtBalanceRecordsQueryRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    MerchantOrderNo string `json:"merchantOrderNo, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    TransactionType string `json:"transactionType, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    ChannelName string `json:"channelName, optional"`
+    PayTypeCode string `json:"payTypeCode, optional"`
+    WalletName  string `json:"walletName, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+// 子錢包紀錄
+type PtBalanceRecordsQueryResponse {
+    List []PtBalanceRecord `json:"list"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+
+
+type ReceiptRecordTotalInfoResponse {
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalActualAmount float64 `json:"totalActualAmount"`
+    TotalTransferAmount float64 `json:"totalTransferAmount"`
+    TotalTransferHandlingFee float64 `json:"totalTransferHandlingFee"`
+    TotalProfitAmount float64 `json:"totalProfitAmount"`
+}
+
+
+// 確認收款
+type ConfirmPayOrderRequest {
+    OrderNo string `json:"orderNo"`
+    Comment string `json:"comment, optional"`
+}
+
+// 確認出款
+type ConfirmProxyPayOrderRequest {
+    OrderNo string `json:"orderNo"`
+    Comment string `json:"comment, optional"`
+}
+
+// 支付單回調
+type CallBackPayOrderRequest {
+    OrderNo string `json:"orderNo"`
+}
+
+// 收款凍結
+type FrozenReceiptOrderRequest {
+    OrderNo string `json:"orderNo"`
+    FrozenAmount float64 `json:"frozenAmount"`
+    Comment string `json:"comment, optional"`
+}
+
+// 解凍訂單
+type UnfrozenOrderRequest {
+    OrderNo string `json:"orderNo"`
+}
+
+// 補單
+type MakeUpReceiptOrderRequest {
+    OrderNo string `json:"orderNo"`
+    ChannelOrderNo string `json:"channelOrderNo, optional"`
+    ReasonType string `json:"reasonType"`
+    Amount float64 `json:"amount"`
+    Comment string `json:"comment, optional"`
+}
+
+type RecoverReceiptOrderRequest {
+    OrderNo string `json:"orderNo"`
+    Amount float64 `json:"amount"`
+    IsCalculateCommission bool `json:"isCalculateCommission"`
+    Comment string `json:"comment, optional"`
+}
+
+// 查詢出款紀錄 tx_order
+type DeductRecordQueryAllRequest {
+    JwtMerchantCode string `json:"jwtMerchantCode, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    MerchantOrderNo string `json:"merchantOrderNo, optional"`
+    DateType string `json:"dateType, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    Status string `json:"status, optional"`
+    Type string `json:"type, optional"`
+    ChannelName string `json:"channelName, optional"`
+    ChannelCode string `json:"channelCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    Source string `json:"source, optional"`
+    ReportType string `json:"reportType, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+// 出款紀錄 tx_order
+type DeductRecordQueryAllResponse {
+    List []DeductRecord `json:"list"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type DeductRecordTotalInfoResponse {
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalTransferHandlingFee float64 `json:"totalTransferHandlingFee"`
+    TotalProfitAmount float64 `json:"totalProfitAmount"`
+}
+
+// 查詢人工還款
+type PersonalRepaymentRequest {
+    OrderNo string `json:"orderNo, optional"`
+    ChannelName string `json:"channelName, optional"`
+    Source string `json:"source, optional"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+    CurrencyCode string `json:"currencyCode"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+// 人工還款
+type PersonalRepaymentResponse {
+    List []PersonalRepayment `json:"list"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+// 查詢凍結紀錄 tx_order
+type FrozenRecordQueryAllRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    MerchantOrderNo string `json:"merchantOrderNo, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    Type string `json:"type, optional"`
+    PayTypeCode string `json:"payTypeCode, optional"`
+    ChannelName string `json:"channelName, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+// 凍結紀錄 tx_order
+type FrozenRecordQueryAllResponse {
+    List []FrozenRecord `json:"list"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type OrderChannelRecordReqeust {
+    OrderNo string `json:"orderNo"`
+}
+
+type OrderChannelRecordResponse {
+    List []OrderChannels `json:"list"`
+}
+
+type PersonalStatusUpdateResponse {
+    OrderNo string `json:"orderNo"`
+    PersonProcessStatus string `json:"personProcessStatus"`
+    Comment string `json:"comment, optional"`
+    ChannelOrderNo string `json:"channelOrderNo, optional"`
+    ChannelTransAt string `json:"channelTransAt, optional"`
+}
+
+type ProxyPayCallbackMerchantRequest struct {
+    OrderNo string `json:"orderNo"`
+}
+
+@server(
+    jwt: Auth
+    group: orderrecord
+    prefix: api/v1/transaction
+)
+service boadmin-api {
+    @handler ReceiptRecordQueryAllHandler
+    post /orderrecord/receipt_record_query_all (ReceiptRecordQueryAllRequest) returns (ReceiptRecordQueryAllResponse)
+
+    @handler ReceiptRecordTotalInfoHandler
+    post /orderrecord/receipt_record_total_info (ReceiptRecordQueryAllRequest) returns (ReceiptRecordTotalInfoResponse)
+
+    @handler ReceiptRecordExcelHandler
+    post /orderrecord/receipt_record_excel (ReceiptRecordQueryAllRequest) returns (ReceiptRecordQueryAllResponse)
+
+    @handler ReceiptRecordMerchantExcelHandler
+    post /orderrecord/receipt_record_merchant_excel (ReceiptRecordQueryAllRequest) returns (ReceiptRecordQueryAllResponse)
+
+    @handler PtBalanceRecordsQueryAllHandler
+    post /orderrecord/pt_balance_records_query (PtBalanceRecordsQueryRequest) returns (PtBalanceRecordsQueryResponse)
+
+    @handler IncomeExpenseQueryAllHandler
+    post /orderrecord/income_expense_query (IncomeExpenseQueryRequest) returns (IncomeExpenseQueryResponse)
+
+    @handler IncomeExpenseExcelHandler
+    post /orderrecord/income_expense_excel (IncomeExpenseQueryRequest) returns (IncomeExpenseQueryResponse)
+
+    @handler IncomeExpenseMerchantExcelHandler
+    post /orderrecord/income_expense_merchant_excel (IncomeExpenseQueryRequest) returns (IncomeExpenseQueryResponse)
+
+    @handler ConfirmPayOrderHandler
+    post /orderrecord/confirm_pay_order (ConfirmPayOrderRequest)
+
+    @handler ConfirmProxyPayOrderHandler
+    post /orderrecord/confirm_proxy_pay_order (ConfirmProxyPayOrderRequest)
+
+    @handler CallBacPayOrderHandler
+    post /orderrecord/callback_pay_order (CallBackPayOrderRequest)
+
+    @handler FrozenReceiptOrderHandler
+    post /orderrecord/frozen_receipt_order (FrozenReceiptOrderRequest)
+
+    @handler MakeUpReceiptOrderHandler
+    post /orderrecord/make_up_receipt_order (MakeUpReceiptOrderRequest)
+
+    @handler RecoverReceiptOrderHandler
+    post /orderrecord/recover_receipt_order (RecoverReceiptOrderRequest)
+
+    @handler DeductRecordQueryAllHandler
+    post /orderrecord/deduct_record_query_all (DeductRecordQueryAllRequest) returns (DeductRecordQueryAllResponse)
+
+    @handler DeductRecordTotalInfoHandler
+    post /orderrecord/deduct_record_total_info (DeductRecordQueryAllRequest) returns (DeductRecordTotalInfoResponse)
+
+    @handler DeductRecordExcelHandler
+    post /orderrecord/deduct_record_excel (DeductRecordQueryAllRequest) returns (DeductRecordQueryAllResponse)
+
+    @handler DeductRecordMerchantExcelHandler
+    post /orderrecord/deduct_record_merchant_excel (DeductRecordQueryAllRequest) returns (DeductRecordQueryAllResponse)
+
+    @handler ReversalRecordHandler
+    post /orderrecord/reversal_record (ReversalRecordRequest)
+
+    @handler PersonalRepaymentHandler
+    post /orderrecord/personal_repayment_query_all (PersonalRepaymentRequest) returns (PersonalRepaymentResponse)
+
+    @handler OrderChannelRecordHandler
+    post /orderrecord/order_channel_query (OrderChannelRecordReqeust) returns (OrderChannelRecordResponse)
+
+    @handler FrozenRecordQueryAllHandler
+    post /orderrecord/frozen_record_query_all (FrozenRecordQueryAllRequest) returns (FrozenRecordQueryAllResponse)
+
+    @handler UnfrozenOrderHandler
+    post /orderrecord/unfrozen_order (UnfrozenOrderRequest)
+
+    @handler PersonalStatusUpdateHandler
+    post /orderrecord/personal_status_update (PersonalStatusUpdateResponse)
+
+    @handler ProxyPayCallBackMerchantHandler
+    post /proxy-call-back-merchant (ProxyPayCallbackMerchantRequest)
+
+    @handler WithdrawCallBackMerchantHandler
+    post /withdraw-call-back-merchant (ProxyPayCallbackMerchantRequest)
+
+    @handler WithdrawProxyPayApiQueryHandler
+    post /withdraw-call-back-proxy (ProxyPayCallbackMerchantRequest)
+}

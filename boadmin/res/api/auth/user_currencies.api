@@ -1,0 +1,38 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type UserCurrency {
+    UserAccount string `json:"userAccount"`
+    CurrencyCode string `json:"currencyCode"`
+}
+
+type UserCurrenciesQueryRequest {
+    UserAccount string `json:"userAccount"`
+}
+
+type UserCurrencyQuery {
+    UserAccount string `json:"userAccount"`
+    CurrencyCode string `json:"currencyCode"`
+    SortOrder int64 `json:"sortOrder"`
+}
+
+type UserCurrenciesQueryResponse {
+    List []UserCurrencyQuery `json:"list"`
+}
+
+@server(
+    jwt: Auth
+    group: admin_user
+    prefix: api/v1/auth
+)
+service boadmin-api {
+    @handler UserCurrenciesQueryHandler
+    post /user/query_user_currencies (UserCurrenciesQueryRequest) returns (UserCurrenciesQueryResponse)
+}

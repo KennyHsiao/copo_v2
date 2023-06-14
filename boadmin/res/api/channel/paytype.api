@@ -1,0 +1,101 @@
+syntax = "v1"
+
+info(
+    title: "支付類型"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type PayType {
+    ID int64 `json:"id, optional"`
+    Code string `json:"code, optional"`
+    Name string `json:"name, optional"`
+    NameI18n NameI18n `json:"nameI18N, optional"`
+    Currency string `json:"currency, optional"`
+    ImgUrl string `json:"imgUrl, optional"`
+    SortNum string `json:"sortNum, optional"`
+    ChannelDatas []ChannelData `json:"channelDatas, optional" gorm:"many2many:ch_channel_pay_types:foreignKey:code;joinForeignKey:pay_type_code;references:code;joinReferences:channel_code"`
+}
+
+type NameI18n struct {
+    En string `json:"en, optional"`
+    Zh string `json:"zh, optional"`
+}
+
+type PayTypeCreateRequest {
+    Code string `json:"code, optional" valiate: "required"`
+    Name string `json:"name, optional" valiate: "required"`
+    NameI18n NameI18n `json:"nameI18N, optional"`
+    Currency string `json:"currency, optional"`
+    ImgUrl string `json:"imgUrl, optional"`
+    SortNum string `json:"sortNum, optional"`
+    ChannelDatas []ChannelData `json:"channelDatas, optional" gorm:"many2many:ch_channel_pay_types:foreignKey:code;joinForeignKey:pay_type_code;references:code;joinReferences:channel_code"`
+}
+
+type PayTypeUpdateRequest {
+    ID int64 `json:"id" valiate: "required"`
+    Code string `json:"code, optional" valiate: "required"`
+    Name string `json:"name, optional" valiate: "required"`
+    NameI18n NameI18n `json:"nameI18N, optional"`
+    Currency string `json:"currency, optional"`
+    ImgUrl string `json:"imgUrl, optional"`
+    SortNum string `json:"sortNum, optional"`
+    ChannelDatas []ChannelData `json:"channelDatas, optional" gorm:"many2many:ch_channel_pay_types:foreignKey:code;joinForeignKey:pay_type_code;references:code;joinReferences:channel_code"`
+}
+type PayTypeDeleteRequest {
+    ID int64 `json:"id"`
+}
+type PayTypeQueryRequest {
+    ID int64 `json:"id"`
+}
+type PayTypeQueryResponse {
+    PayType
+}
+
+type PayTypeQueryAllRequest {
+    Code string `json:"code,optional"`
+    Name string `json:"name,optional"`
+    Currency string `json:"currency,optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"` //gorm:"-" 忽略這參數檢查是否有給
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type PayTypeQueryAllResponse {
+    List []PayType `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type BatchSortRequest {
+    List []int64 `json:"list"`
+}
+
+
+@server(
+    jwt: Auth
+    group: paytype
+    prefix: api/v1/channel
+)
+service boadmin-api {
+    @handler PayTypeCreateHandler
+    post /paytype/create (PayTypeCreateRequest)
+
+    @handler PayTypeUpdateHandler
+    post /paytype/update (PayTypeUpdateRequest)
+
+    @handler PayTypeDeleteHandler
+    post /paytype/delete (PayTypeDeleteRequest)
+
+    @handler PayTypeQueryHandler
+    post /paytype/query (PayTypeQueryRequest) returns (PayTypeQueryResponse)
+
+    @handler PayTypeQueryAllHandler
+    post /paytype/query_all (PayTypeQueryAllRequest) returns (PayTypeQueryAllResponse)
+
+    @handler PayTypeBatchSortHandler
+    post /paytype/batch_sort (BatchSortRequest)
+
+}

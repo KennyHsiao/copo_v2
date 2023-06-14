@@ -1,0 +1,99 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type MerchantUser {
+    ID int64 `json:"id"`
+    merchant_code string `json:"merchantCode"`
+    Account string `json:"account"`
+    Status string `json:"status"`
+    DisableDelete string `json:"disableDelete"`
+    RegisteredAt string `json:"registeredAt"`
+    LastLogin_at string `json:"lastLoginAt"`
+    IsFreeze string `json:"isFreeze, optional"`
+    RoleNames string `json:"roleNames"`
+    RoleId int64 `json:"roleId"`
+}
+
+type MerchantUserQueryAllRequest {
+    MerchantCode string `json:"merchantCode,optional"`
+    Account string `json:"account,optional"`
+    RoleId int64 `json:"roleId,optional"`
+    Status string `json:"status,optional"`
+    PageNum int `json:"pageNum,optional" gorm:"-"`
+    PageSize int `json:"pageSize,optional" gorm:"-"`
+}
+
+// 新增
+type MerchantUserCreateRequest {
+    Account string `json:"account" validate:"alphanumLength=6/12"`
+    Email string `json:"email" validate:"email"`
+    Phone string `json:"phone, optional"`
+    Roles []Role `json:"roles, optional" gorm:"many2many:au_user_roles;foreignKey:id;joinForeignKey:user_id;"`
+    Merchants []Merchant `json:"merchants, optional" gorm:"many2many:au_user_merchants;foreignKey:account;joinForeignKey:user_account;references:code;joinReferences:merchant_code;"`
+    Currencies []Currency `json:"currencies, optional" gorm:"many2many:au_user_currencies;foreignKey:account;joinForeignKey:user_account;references:code;joinReferences:currency_code;"`
+}
+
+// 修改
+type MerchantUserUpdateRequest {
+    ID int64 `json:"id"`
+    Account string `json:"account, optional" validate:"alphanumLength=6/12"`
+    Email string `json:"email, optional" validate:"email"`
+    Phone string `json:"phone, optional"`
+    Status string `json:"status, optional"`
+    Roles []Role `json:"roles, optional" gorm:"many2many:au_user_roles;foreignKey:id;joinForeignKey:user_id;"`
+    Merchants []Merchant `json:"merchants, optional" gorm:"many2many:au_user_merchants;foreignKey:account;joinForeignKey:user_account;references:code;joinReferences:merchant_code;"`
+    Currencies []Currency `json:"currencies, optional" gorm:"many2many:au_user_currencies;foreignKey:account;joinForeignKey:user_account;references:code;joinReferences:currency_code;"`
+}
+
+type MerchantUserQueryAllResponse {
+    List []MerchantUser `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type MerchantUserResetPasswordRequest {
+    Account string `json:"account"`
+}
+
+type MerchantUserUpdatePasswordRequest {
+    Account string `json:"account"`
+    OldPassword string `json:"oldPassword,optional" validate:"required" gorm:"-"`
+    Password string `json:"password" validate:"required,alphanumLength=8/16"`
+    PasswordConfirm string `json:"passwordConfirm" validate:"eqfield=Password" gorm:"-"`
+}
+
+@server(
+    jwt: Auth
+    group: merchant_user
+    prefix: api/v1/auth
+)
+service boadmin-api {
+    @handler MerchantUserCreateHandler
+    post /merchantuser/create (MerchantUserCreateRequest)
+
+    @handler MerchantUserUpdateHandler
+    post /merchantuser/update (MerchantUserUpdateRequest)
+
+    @handler MerchantUserQueryAllHandler
+    post /merchantuser/query_all (MerchantUserQueryAllRequest) returns (MerchantUserQueryAllResponse)
+
+    @handler MerchantUserResetPasswordHandler
+    post /merchantuser/reset_password (MerchantUserResetPasswordRequest)
+}
+
+@server(
+    group: merchant_user
+    prefix: api/v1/auth
+)
+service boadmin-api {
+    @handler MerchantUserUpdatePasswordHandler
+    post /merchantuser/update_password (MerchantUserUpdatePasswordRequest)
+}

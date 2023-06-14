@@ -1,0 +1,120 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type PayOrderRequest {
+    AccessType string `json:"accessType" validate:"max=2"`
+    MerchantId string `json:"merchantId"`
+    NotifyUrl string `json:"notifyUrl"  validate:"max=180"`
+    PageUrl string `json:"pageUrl, optional"`
+    Language string `json:"language" validate:"max=8"`
+    Sign string `json:"sign"`
+    JumpType string `json:"jumpType, optional" validate:"max=12"`
+    LoginType string `json:"loginType, optional" validate:"max=12"`
+    OrderNo string `json:"orderNo" validate:"max=40"`
+    OrderAmount string `json:"orderAmount"`
+    Currency string `json:"currency" validate:"max=5"`
+    PayType string `json:"payType" validate:"max=8"`
+    OrderTime string `json:"orderTime, optional" validate:"max=20"`
+    OrderName string `json:"orderName" validate:"max=180"`
+    BankCode string `json:"bankCode, optional" validate:"max=12"`
+    Phone string `json:"phone, optional" validate:"max=18"`
+    PayTypeNo string `json:"payTypeNo, optional" validate:"max=4"`
+    UserId string `json:"userId, optional" validate:"max=255"`
+    MerchantLevel string `json:"merchantLevel, optional" validate:"max=3"`
+    UserIp string `json:"userIp, optional" validate:"max=64"`
+}
+
+type PayOrderResponse {
+    BankCode string `json:"bankCode"`
+    Info string `json:"info"`
+    PayOrderNo string `json:"payOrderNo"`
+    RespCode string `json:"respCode"`
+    RespMsg string `json:"respMsg"`
+    Sign string `json:"sign"`
+    Status int64 `json:"status"`
+    Type string `json:"type"`
+}
+
+type PayQueryRequest {
+    AccessType string `json:"accessType"`
+    MerchantId string `json:"merchantId"`
+    Sign string `json:"sign"`
+    Language string `json:"language, optional"`
+    OrderNo string `json:"orderNo"`
+    PayTypeNo string `json:"payTypeNo, optional"`
+}
+
+type PayQueryResponse {
+    RespCode string `json:"respCode"`
+    RespMsg string `json:"respMsg"`
+    Language string `json:"language"`
+    BankCode string `json:"bankCode"`
+    Fee string `json:"fee"`
+    MerchantId string `json:"merchantId"`
+    OrderAmount string `json:"orderAmount"`
+    OrderNo string `json:"orderNo"`
+    OrderTime string `json:"orderTime"`
+    PayOrderId string `json:"payOrderId"`
+    PayOrderTime string `json:"payOrderTime"`
+    OrderStatus string `json:"orderStatus"`
+    Sign string `json:"sign"`
+}
+
+type PayQueryBalanceRequest {
+    AccessType string `json:"accessType"`
+    MerchantId string `json:"merchantId"`
+    Sign string `json:"sign"`
+    Currency string `json:"currency, optional" validate:"max=5"`
+}
+
+type PayQueryBalanceResponse {
+    RespCode string `json:"respCode"`
+    RespMsg string `json:"respMsg"`
+    PayAmount string `json:"payAmount"`
+    ProxyAmount string `json:"proxyAmount"`
+    AvailableAmount string `json:"availableAmount"`
+    FrozenAmount string `json:"frozenAmount"`
+    Sign string `json:"sign"`
+}
+
+type PayCallBackRequest {
+    callbackTime string `json:"callbackTime"`
+    channelOrderNo string `json:"channelOrderNo"`
+    orderAmount float64 `json:"orderAmount"`
+    orderStatus string `json:"orderStatus"`
+    payOrderNo string `json:"payOrderNo"`
+}
+
+type PayCallBackResponse {
+    RespCode string `json:"respCode"`
+    RespMsg string `json:"respMsg"`
+    status int64 `json:"status"`
+    data int64 `json:"data"`
+}
+
+@server(
+    jwt: Auth
+    group: payorder
+    prefix: dior/merchant-api
+)
+service boadmin-api {
+
+    @handler PayOrderHandler
+    post /pay-order (PayOrderRequest) returns (PayOrderResponse)
+
+    @handler PayQueryHandler
+    post /pay-query (PayQueryRequest) returns (PayQueryResponse)
+
+    @handler PayQueryBalanceHandler
+    post /pay-query-balance (PayQueryBalanceRequest) returns (PayQueryBalanceResponse)
+
+    @handler PayCallBackHandler
+    post /pay-call-back (PayCallBackRequest) returns (PayCallBackResponse)
+}

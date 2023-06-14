@@ -1,0 +1,48 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type SystemParam {
+    ID int64 `json:"id"`
+    Name string `json:"name"`
+    Type string `json:"type"`
+    Value string `json:"value"`
+    Title string `json:"title"`
+}
+
+type SystemParamUpdate {
+    Name string `json:"name"`
+    Value string `json:"value"`
+}
+
+type SystemParamUpdateRequest {
+    List []SystemParamUpdate `json:"list"`
+}
+
+
+type SystemParamQueryAllRequest {
+
+}
+
+type SystemParamQueryAllResponse {
+    List []SystemParam `json:"list"`
+}
+
+@server(
+    jwt: Auth
+    group: systemparam
+    prefix: api/v1/basic
+)
+service boadmin-api {
+    @handler SystemParamQueryAllHandler
+    post /systemParam/query_all (SystemParamQueryAllRequest) returns (SystemParamQueryAllResponse)
+
+    @handler SystemParamUpdateHandler
+    post /systemParam/update (SystemParamUpdateRequest)
+}

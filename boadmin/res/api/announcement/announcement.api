@@ -1,0 +1,186 @@
+syntax = "v1"
+
+info(
+    title: ""
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type Announcement {
+    ID int64 `json:"id"`
+    TemplateCode string `json:"templateCode"`
+    Title string `json:"title"`
+    Status string `json:"status"`
+    Content string `json:"content"`
+    Language string `json:"language"`
+    CommunicationSoftware string `json:"communicationSoftware"`
+    AnnouncementChannels []AnnouncementChannel `json:"announcementChannels" gorm:"foreignKey:AnnouncementId;references:ID"`
+    AnnouncementMerchants []AnnouncementMerchant `json:"announcementMerchants" gorm:"foreignKey:AnnouncementId;references:ID"`
+    AnnouncementParams []AnnouncementParam `json:"announcementParams" gorm:"foreignKey:AnnouncementId;references:ID"`
+}
+
+type AnnouncementChannel {
+    ID int64 `json:"id, optional"`
+    AnnouncementId int64 `json:"announcementId, optional"`
+    ChannelId string `json:"channelId, optional"`
+    ChannelRule ChannelRule `json:"channelRule, optional" gorm:"foreignKey:ChannelId;references:ID"`
+    Type string `json:"type, optional"`
+}
+
+type AnnouncementMerchant {
+    ID int64 `json:"id, optional"`
+    AnnouncementId int64 `json:"announcementId, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    Merchant Merchant `json:"merchant, optional" gorm:"foreignKey:MerchantCode;references:code"`
+    Status string `json:"status, optional"`
+    ChatId string `json:"chatId, optional"`
+    MessageId string `json:"messageId, optional"`
+}
+
+type AnnouncementParam {
+    ID int64 `json:"id, optional"`
+    AnnouncementId int64 `json:"announcementId, optional"`
+    Name string `json:"name, optional"`
+    ParamKey string `json:"paramKey, optional"`
+    ParamValue string `json:"paramValue, optional"`
+}
+
+// 查詢
+type AnnouncementQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type AnnouncementQueryResponse {
+    Announcement
+}
+
+type AnnouncementQueryAllRequest {
+    TemplateCode []string `json:"templateCode, optional"`
+    Title string `json:"title, optional"`
+    Status []string `json:"status, optional"`
+    Content string `json:"content, optional"`
+    GroupName string `json:"groupName, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CommunicationSoftware string `json:"communicationSoftware, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type AnnouncementQueryAllResponse {
+    List []Announcement `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type AnnouncementCreateRequest {
+    ID int64 `json:"id, optional"`
+    TemplateCode string `json:"templateCode"`
+    Title string `json:"title"`
+    Content string `json:"content"`
+    Language string `json:"language"`
+    Status string `json:"status, optional"`
+    Action string `json:"action, optional" gorm:"-"`
+    CommunicationSoftware string `json:"communicationSoftware, optional"`
+    AnnouncementChannels []AnnouncementChannel `json:"announcementChannels" gorm:"-"`
+    AnnouncementMerchants []AnnouncementMerchant `json:"announcementMerchants" gorm:"-"`
+    AnnouncementParams []AnnouncementParam `json:"announcementParams" gorm:"-"`
+}
+
+type AnnouncementUpdateRequest {
+    ID int64 `json:"id"`
+    TemplateCode string `json:"templateCode"`
+    Title string `json:"title"`
+    Content string `json:"content"`
+    Language string `json:"language"`
+    Status string `json:"status, optional"`
+    AnnouncementChannels []AnnouncementChannel `json:"announcementChannels" gorm:"-"`
+    AnnouncementParams []AnnouncementParam `json:"announcementParams" gorm:"-"`
+}
+
+type AnnouncementUpdateDraftRequest {
+    ID int64 `json:"id"`
+    TemplateCode string `json:"templateCode"`
+    Title string `json:"title"`
+    Content string `json:"content"`
+    Language string `json:"language"`
+    Status string `json:"status, optional"`
+    Action string `json:"action, optional" gorm:"-"`
+    CommunicationSoftware string `json:"communicationSoftware, optional"`
+    AnnouncementChannels []AnnouncementChannel `json:"announcementChannels" gorm:"-"`
+    AnnouncementMerchants []AnnouncementMerchant `json:"announcementMerchants" gorm:"-"`
+    AnnouncementParams []AnnouncementParam `json:"announcementParams" gorm:"-"`
+}
+
+type AnnouncementDeleteRequest {
+    ID int64 `json:"id, optional"`
+}
+
+type AnnouncementCopyRequest {
+    ID int64 `json:"id, optional"`
+}
+
+type AnnouncementResendRequest {
+    ID int64 `json:"id, optional"`
+}
+
+type AnnouncementUnsendRequest {
+    ID int64 `json:"id, optional"`
+}
+
+type AnnouncementMerchantIgnoreRequest {
+    AnnouncementId int64 `json:"announcementId, optional"`
+    MerchantCode string `json:"merchantCode"`
+}
+
+type AnnouncementMerchantResendRequest {
+    AnnouncementId int64 `json:"announcementId, optional"`
+    MerchantCode string `json:"merchantCode"`
+}
+
+
+@server(
+    jwt: Auth
+    group: announcement
+    prefix: api/v1/announcement
+)
+service boadmin-api {
+    @handler AnnouncementQueryHandler
+    post /announcement/query (AnnouncementQueryRequest) returns (AnnouncementQueryResponse)
+
+    @handler AnnouncementQueryAllHandler
+    post /announcement/query_all (AnnouncementQueryAllRequest) returns (AnnouncementQueryAllResponse)
+
+    @handler AnnouncementCreateHandler
+    post /announcement/create (AnnouncementCreateRequest)
+
+    @handler AnnouncementUpdateHandler
+    post /announcement/update (AnnouncementUpdateRequest)
+
+    @handler AnnouncementUpdateDraftHandler
+    post /announcement/update_draft (AnnouncementUpdateDraftRequest)
+
+    @handler AnnouncementDeleteHandler
+    post /announcement/delete (AnnouncementDeleteRequest)
+
+    @handler AnnouncementCopyHandler
+    post /announcement/copy (AnnouncementCopyRequest)
+
+    @handler AnnouncementResendHandler
+    post /announcement/resend (AnnouncementResendRequest)
+
+    @handler AnnouncementUnsendHandler
+    post /announcement/unsend (AnnouncementUnsendRequest)
+
+    @handler AnnouncementMerchantIgnoreHandler
+    post /announcementMerchant/ignore (AnnouncementMerchantIgnoreRequest)
+
+    @handler AnnouncementMerchantResendHandler
+    post /announcementMerchant/resend (AnnouncementMerchantResendRequest)
+}
+
+

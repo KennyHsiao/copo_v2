@@ -1,0 +1,75 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type SystemRate {
+    ID int64 `json:"id"`
+    CurrencyCode string `json:"currencyCode"`
+    WithdrawHandlingFee float64 `json:"withdrawHandlingFee"`
+    MinWithdrawCharge float64 `json:"minWithdrawCharge"`
+    MaxWithdrawCharge float64 `json:"maxWithdrawCharge"`
+    CreatedBy string `json:"createdBy"`
+    UpdatedBy string `json:"updatedBy"`
+}
+
+type SystemRateRequest {
+    CurrencyCode string `json:"currencyCode"`
+    WithdrawHandlingFee float64 `json:"withdrawHandlingFee"`
+    MinWithdrawCharge float64 `json:"minWithdrawCharge"`
+    MaxWithdrawCharge float64 `json:"maxWithdrawCharge"`
+}
+
+type SystemRateUpdateRequest {
+    ID int64 `json:"id"`
+    WithdrawHandlingFee float64 `json:"withdrawHandlingFee"`
+    MinWithdrawCharge float64 `json:"minWithdrawCharge"`
+    MaxWithdrawCharge float64 `json:"maxWithdrawCharge"`
+    CurrencyCode string `json:"currencyCode"`
+}
+
+type SystemIpRequest {
+    IpString string `json:"ipString"`
+}
+
+type SystemRateQueryAllResponse {
+    List []SystemRate `json:"list"`
+}
+
+type SystemChannelBalanceLimitUpdateRequest {
+    BalanceLimit string `json:"balanceLimit"`
+}
+
+@server(
+    jwt: Auth
+    group: systemrate
+    prefix: api/v1/basic
+)
+service boadmin-api {
+    @handler SystemRateCreateHandler
+    post /systemrate/create (SystemRateRequest)
+
+    @handler SystemRateUpdateHandler
+    post /systemrate/update (SystemRateUpdateRequest)
+
+    @handler SystemRateQueryAllHandler
+    post /systemrate/query_all () returns (SystemRateQueryAllResponse)
+
+    @handler SystemIpQueryAllHandler
+    post /systemip/query_all() returns (string)
+
+    @handler SystemIpUpdateHandler
+    post /systemip/update (SystemIpRequest)
+
+    @handler SystemChannelBalanceLimitQueryHandler
+    post /systemchannelbalance/query() returns (string)
+
+    @handler SystemChannelBalanceLimitUpdateHandler
+    post /systemchannelbalance/update (SystemChannelBalanceLimitUpdateRequest)
+
+}

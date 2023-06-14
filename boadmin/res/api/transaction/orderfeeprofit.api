@@ -1,0 +1,49 @@
+syntax = "v1"
+
+info(
+    title: "訂單費率利潤紀錄"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type OrderFeeProfit {
+    ID int64 `json:"id"`
+    OrderNo string `json:"orderNo"`
+    MerchantCode string `json:"merchantCode"`
+    AgentLayerNo string `json:"agentLayerNo"`
+    AgentParentCode string `json:"agentParentCode"`
+    BalanceType string `json:"balanceType"`
+    Fee float64 `json:"fee"`
+    HandlingFee float64 `json:"handlingFee"`
+    TransferHandlingFee float64 `json:"transferHandlingFee"`
+    ProfitAmount float64 `json:"profitAmount"`
+}
+
+type OrderFeeProfitQueryAllRequest {
+    OrderNo string `json:"orderNo"`
+    MerchantCode string `json:"merchantCode"`
+    AgentLayerNo string `json:"agentLayerNo"`
+    AgentParentCode string `json:"agentParentCode"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type OrderFeeProfitQueryAllResponse {
+    List []OrderFeeProfit `json:"list"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: orderfeeprofit
+    prefix: api/v1/transaction
+)
+service boadmin-api {
+
+    @handler OrderFeeProfitQueryAllHandler
+    post /orderfeeprofit/query_all (OrderFeeProfitQueryAllRequest) returns (OrderFeeProfitQueryAllResponse)
+}

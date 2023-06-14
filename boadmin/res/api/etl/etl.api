@@ -1,0 +1,76 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+
+type MerchantAndAminInfo {
+    AccountName string `json:"account_name"`
+    Password string `json:"password"`
+    VerificationKey string`json:"verification_key"`
+    MerchantCoding string `json:"merchant_coding"`
+    FailCount string `json:"fail_count"`
+    ActivationStatus string `json:"activation_status"`
+    LastLoginAt string `json:"last_login_at"`
+    SystemId string `json:"system_id"`
+    Status string `json:"status"`
+}
+
+type MerchantInfo {
+    MerchantCoding string `json:"merchant_coding"`
+    MerchantKey string `json:"merchant_key"`
+    MerchantGrade string `json:"merchant_grade"`
+    AccountActivationStatus string `json:"account_activation_status"`
+    MerchantPhoneNumber string `json:"merchant_phone_number"`
+    MerchantMailbox string `json:"merchant_mailbox"`
+    MerchantCommunicationSoftware string `json:"merchant_communication_software"`
+    MerchantCommunicationSoftwareNickname string `json:"merchant_communication_software_nickname"`
+    MerchantCommunicationSoftwareGroupName string `json:"merchant_communication_software_group_name"`
+    MerchantCommunicationGroupId string `json:"merchant_communication_group_id"`
+    MerchantCompanyName string `json:"merchant_company_name"`
+    MerchantOperatingWebsite string `json:"merchant_operating_website"`
+    MerchantTestAccount string `json:"merchant_test_account"`
+    MerchantTestpassword string `json:"merchant_test_password"`
+    WithdrawSetting string `json:"withdraw_setting"`
+    WithdrawType string `json:"withdraw_type"`
+    ChannelUseType string `json:"channel_use_type"`
+    IsAgentRole string `json:"is_agent_role"`
+    IsHaveAgentMerchant string `json:"is_have_agent_merchant"`
+    ParentMerchantCoding string `json:"parent_merchant_coding"`
+    AgentLayerNo string `json:"agent_layer_no"`
+}
+
+type MerchantRequest{
+    Records []MerchantInfo `json:"RECORDS"`
+}
+
+type MerchantAndAdminInfoRequest {
+    Records []MerchantAndAminInfo `json:"RECORDS"`
+}
+
+type UploadExcelRequest{
+}
+
+@server(
+    jwt: Auth
+    group: etl
+    prefix: api/v1/etl
+)
+service boadmin-api {
+    @handler MerchantAndAdminEtlHandler
+    post /merchantAndAdmin (MerchantAndAdminInfoRequest)
+
+    @handler MerchantEtlHandler
+    post /merchant (MerchantRequest)
+
+    @handler ChannelEtlHandler
+    post /channel ()
+
+    @handler CommissionExcelImportHandler
+    post /commissionExcelImport (UploadExcelRequest)
+}

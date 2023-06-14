@@ -1,0 +1,194 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type User {
+    ID int64 `json:"id"`
+    Account string `json:"account"`
+    Name string `json:"name"`
+    Email string `json:"email"`
+    Phone string `json:"phone"`
+    Avatar string `json:"avatar"`
+    Password string `json:"-"`
+    RegisteredAt int64 `json:"registeredAt, optional"`
+    RegisteredAtS string `json:"registeredAtS, optional" gorm:"-"`
+    LastLoginAt int64 `json:"lastLoginAt"`
+    LastLoginIP string `json:"lastLoginIp"`
+    Status string `json:"status"`
+    DisableDelete string `json:"disableDelete"`
+    IsLogin string `json:"isLogin"`
+    IsAdmin string `json:"isAdmin, optional"`
+    IsFreeze string `json:"isFreeze, optional"`
+    IsBind string `json:"isBind, optional"`
+    OtpKey string `json:"otpKey, optional"`
+    Qrcode string `json:"qrcode, optional"`
+    Remark string `json:"remark, optional"`
+    FailCount string `json:"failCount, optional"`
+    Currencies []Currency `json:"currencies, optional" gorm:"many2many:au_user_currencies;foreignKey:account;joinForeignKey:user_account;references:code;joinReferences:currency_code;"`
+    Roles []Role `json:"roles" gorm:"many2many:au_user_roles;foreignKey:id;joinForeignKey:user_id;"`
+    Merchants []Merchant `json:"merchants" gorm:"many2many:au_user_merchants;foreignKey:account;joinForeignKey:user_account;references:code;joinReferences:merchant_code;"`
+} 
+
+// 新增
+type UserCreateRequest {
+    ID int64 `json:"id, optional"`
+    Account string `json:"account" validate:"alphanumLength=6/12"`
+    Name string `json:"name" validate:"required,lte=32"`
+    Avatar string `json:"avatar,optional"`
+    Email string `json:"email, optional"`
+    Phone string `json:"phone, optional"`
+    Roles []Role `json:"roles, optional" gorm:"many2many:au_user_roles;foreignKey:id;joinForeignKey:user_id;"`
+    Merchants []Merchant `json:"merchants, optional" gorm:"many2many:au_user_merchants;foreignKey:account;joinForeignKey:user_account;references:code;joinReferences:merchant_code;"`
+    Password string `json:"password" validate:"required,alphanumLength=8/16"`
+    PasswordConfirm string `json:"passwordConfirm" validate:"eqfield=Password" gorm:"-"`
+    RegisteredAt  int64      `json:"registeredAt, optional"`
+    Status string `json:"status, optional"`
+    IsLogin string `json:"islogin, optional"`
+    IsAdmin string `json:"isAdmin, optional"`
+    DisableDelete string `json:"disableDelete, optional"`
+    Remark string `json:"remark, optional"`
+    Currencies []Currency `json:"currencies, optional" gorm:"many2many:au_user_currencies;foreignKey:account;joinForeignKey:user_account;references:code;joinReferences:currency_code;"`
+}
+
+// 修改
+type UserUpdateRequest {
+    ID int64 `json:"id"`
+    Account string `json:"account,optional" validate:"alphanumLength=6/12"`
+    Name string `json:"name,optional" validate:"lte=32"`
+    Avatar string `json:"avatar,optional"`
+    Email string `json:"email, optional"`
+    Phone string `json:"phone, optional"`
+    OtpKey string `json:"otpKey, optional"`
+    Qrcode string `json:"qrcode, optional"`
+    Roles []Role `json:"roles, optional" gorm:"many2many:au_user_roles;foreignKey:id;joinForeignKey:user_id;"`
+    Merchants []Merchant `json:"merchants, optional" gorm:"many2many:au_user_merchants;foreignKey:account;joinForeignKey:user_account;references:code;joinReferences:merchant_code;"`
+    OldPassword string `json:"oldPassword,optional" validate:"required_with=Password" gorm:"-"`
+    Password string `json:"password,optional" validate:"required_with=OldPassword,alphanumLength=8/16"`
+    PasswordConfirm string `json:"passwordConfirm,optional" validate:"eqfield=Password" gorm:"-"`
+    RegisteredAt  int64      `json:"registeredAt, optional"`
+    Status string `json:"status, optional"`
+    IsLogin string `json:"isLogin, optional"`
+    DisableDelete string `json:"disableDelete, optional"`
+    Remark string `json:"remark, optional"`
+    Currencies []Currency `json:"currencies, optional" gorm:"many2many:au_user_currencies;foreignKey:account;joinForeignKey:user_account;references:code;joinReferences:currency_code;"`
+}
+
+// 刪除
+type UserDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+// 查詢
+type UserQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type UserQueryResponse {
+    User
+}
+
+type UserQueryAllRequest {
+    Account string `json:"account,optional"`
+    Name string `json:"name,optional"`
+    Email string `json:"email,optional"`
+    Status string `json:"status,optional"`
+    RoleName string `json:"roleName,optional"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+}
+
+type UserQueryAllResponse {
+    List []User `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type OtpBindRequest {
+    Account string `json:"account" validate:"required,alphanumLength=6/12"`
+    Password string `json:"password,optional" validate:"omitempty,alphanumLength=8/16"`
+    Regenerate string `json:"regenerate,optional"`
+}
+
+type OtpBindResponse {
+    Secret string `json:"secret"`
+    qrcode string `json:"qrcode"`
+}
+
+type UserResetRequest {
+    MerchantCode string `json:"merchantCode,optional"`
+    Account string  `json:"account"`
+    Target string `json:"target" validate:"oneof=otp password status"`
+}
+
+type UserResetResponse {
+}
+
+type UserMenuRequest {
+}
+
+type UserMenuResponse {
+}
+
+type UserRefreshTokenRequest {
+}
+
+type UserRefreshTokenResponse {
+    AccessToken  string `json:"access_token,omitempty"`
+    AccessExpire int64  `json:"access_expire,omitempty"`
+    RefreshAfter int64  `json:"refresh_after,omitempty"`
+}
+
+type UserUnfreezeRequest {
+    Account string  `json:"account"`
+}
+
+
+@server(
+    jwt: Auth
+    group: admin_user
+    prefix: api/v1/auth
+)
+service boadmin-api {
+    @handler UserCreateHandler
+    post /user/create (UserCreateRequest)
+
+    @handler UserUpdateHandler
+    post /user/update (UserUpdateRequest)
+
+    @handler UserDeleteHandler
+    post /user/delete (UserDeleteRequest)
+
+    @handler UserQueryHandler
+    post /user/query (UserQueryRequest) returns (UserQueryResponse)
+
+    @handler UserQueryAllHandler
+    post /user/query_all (UserQueryAllRequest) returns (UserQueryAllResponse)
+
+    @handler UserMenuHandler
+    post /user/menu (UserMenuRequest) returns (UserMenuResponse)
+
+    @handler UserRefreshTokenHandler
+    post /user/refresh_token (UserRefreshTokenRequest) returns (UserRefreshTokenResponse)
+
+    @handler UserUnfreezeHandler
+    post /user/unfreeze (UserUnfreezeRequest)
+}
+
+@server(
+    group: admin_user
+    prefix: api/v1/auth
+)
+service boadmin-api {
+    @handler OtpBindHandler
+    post /otp/bind(OtpBindRequest) returns (OtpBindResponse)
+
+    @handler UserResetHandler
+    post /user/reset (UserResetRequest) returns (UserResetResponse)
+}

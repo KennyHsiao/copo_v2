@@ -1,0 +1,112 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type MenuTree struct {
+    Menu
+    Child []*MenuTree `json:"child"`
+}
+
+type Menu {
+    ID int64 `json:"id"`
+    ParentID int64 `json:"parentId, optional"`
+    Name string `json:"name, optional"`
+    Group string `json:"group, optional"`
+    Component string `json:"component, optional"`
+    Path string `json:"path, optional"`
+    Meta MenuMeta `json:"meta, optional"`
+    Hidden bool `json:"hidden, optional"`
+    SortOrder int64 `json:"sortOrder, optional"`
+    Permits []Permit `json:"permits, optional" gorm:"foreignKey:menu_id;"`
+}
+
+type MenuMeta {
+    Icon string `json:"icon"`
+    Title string `json:"title"`
+    NoCache bool `json:"noCache"`
+}
+
+// 新增
+type MenuCreateRequest {
+    ID int64 `json:"id, optional"`
+    ParentID int64 `json:"parentId, optional"`
+    Name string `json:"name" valiate:"required,lte=32"`
+    Group string `json:"group" valiate:"required,lte=32"`
+    Component string `json:"component" valiate:"required,lte=128"`
+    Path string `json:"path" valiate:"required,lte=255"`
+    Meta MenuMeta `json:"meta, optional"`
+    Hidden bool `json:"hidden"`
+    SortOrder int64 `json:"sortOrder, optional"`
+    Permits []Permit `json:"permits, optional" gorm:"foreignKey:menu_id;"`
+}
+
+// 修改
+type MenuUpdateRequest {
+    ID int64 `json:"id"`
+    ParentID int64 `json:"parentId, optional"`
+    Name string `json:"name" valiate:"required,lte=32"`
+    Group string `json:"group" valiate:"required,lte=32"`
+    Component string `json:"component" valiate:"required,lte=128"`
+    Path string `json:"path" valiate:"required,lte=255"`
+    Meta MenuMeta `json:"meta, optional"`
+    Hidden bool `json:"hidden"`
+    SortOrder int64 `json:"sortOrder, optional"`
+    Permits []Permit `json:"permits, optional" gorm:"foreignKey:menu_id;"`
+}
+
+// 刪除
+type MenuDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+// 查詢
+type MenuQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type MenuQueryResponse {
+    Menu
+}
+
+type MenuQueryAllRequest {
+    Name string `json:"name, optional"`
+    Group string `json:"group, optional"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+}
+
+type MenuQueryAllResponse {
+    List []Menu `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group:      menu
+    prefix:     api/v1/auth
+)
+service boadmin-api {
+
+    @handler MenuCreateHandler
+    post /menu/create (MenuCreateRequest)
+
+    @handler MenuUpdateHandler
+    post /menu/update (MenuUpdateRequest)
+
+    @handler MenuDeleteHandler
+    post /menu/delete (MenuDeleteRequest)
+
+    @handler MenuQueryHandler
+    post /menu/query (MenuQueryRequest) returns (MenuQueryResponse)
+
+    @handler MenuQueryAllHandler
+    post /menu/query_all (MenuQueryAllRequest) returns (MenuQueryAllResponse)
+}

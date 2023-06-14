@@ -1,0 +1,93 @@
+syntax = "v1"
+
+info(
+    title: "後臺行為紀錄"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type UserLogTemplate {
+    ID int64 `json:"id"`
+    Path string `json:"path"`
+    UserType string `json:"userType"`
+    Type string `json:"type"`
+    ApiName string `json:"apiName"`
+    ApiUnit string `json:"apiUnit"`
+    MsgTemplate string `json:"msgTemplate"`
+}
+
+type UserLogTemplateCreateRequest {
+    Path string `json:"path"`
+    UserType string `json:"userType"`
+    Type string `json:"type"`
+    ApiName string `json:"apiName, optional"`
+    ApiUnit string `json:"apiUnit, optional"`
+    MsgTemplate string `json:"msgTemplate"`
+}
+
+type UserLogTemplateUpdateRequest {
+    ID int64 `json:"id"`
+    Path string `json:"path, optional"`
+    UserType string `json:"userType, optional"`
+    Type string `json:"type, optional"`
+    ApiName string `json:"apiName, optional"`
+    ApiUnit string `json:"apiUnit, optional"`
+    MsgTemplate string `json:"msgTemplate, optional"`
+}
+
+type UserLogTemplateDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+type UserLogTemplateQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type UserLogTemplateQueryResponse {
+    UserLogTemplate
+}
+
+type UserLogTemplateQueryAllRequest {
+    ApiUnit string `json:"apiUnit, optional"`
+    UserType string `json:"userType, optional"`
+    MsgTemplate string `json:"msgTemplate, optional"`
+    Type string `json:"type, optional"`
+    Path string `json:"path, optional"`
+    ApiName string `json:"apiName, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+
+type UserLogTemplateQueryAllResponse {
+    List []UserLogTemplate `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: userlogTemplate
+    prefix: api/v1/auth
+)
+service boadmin-api {
+    @handler UserLogTemplateCreateHandler
+    post /userlogTemplate/create (UserLogTemplateCreateRequest)
+
+    @handler UserLogTemplateUpdateHandler
+    post /userlogTemplate/update (UserLogTemplateUpdateRequest)
+
+    @handler UserLogTemplateDeleteHandler
+    post /userlogTemplate/delete (UserLogTemplateDeleteRequest)
+
+    @handler UserLogTemplateQueryHandler
+    post /userlogTemplate/query (UserLogTemplateQueryRequest) returns (UserLogTemplateQueryResponse)
+
+    @handler UserLogTemplateQueryAllHandler
+    post /userlogTemplate/query_all (UserLogTemplateQueryAllRequest) returns (UserLogTemplateQueryAllResponse)
+}

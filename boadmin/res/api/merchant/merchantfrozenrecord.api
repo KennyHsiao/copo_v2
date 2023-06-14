@@ -1,0 +1,55 @@
+syntax = "v1"
+
+info (
+    title: "商戶凍結紀錄"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type MerchantFrozenRecord {
+    ID  int64 `json:"id, optional"`
+    MerchantBalanceId int64 `json:"merchantBalanceId"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    OrderNo string `json:"orderNo"`
+    OrderType string `json:"orderType"`
+    TransactionType string `json:"transactionType"`
+    BeforeFrozen float64 `json:"beforeFrozen"`
+    FrozenAmount float64 `json:"frozenAmount"`
+    AfterFrozen float64 `json:"afterFrozen"`
+    Comment string `json:"comment"`
+    CreatedBy string `json:"createdBy"`
+
+}
+
+// 分頁查詢
+type MerchantFrozenRecordQueryAllRequest {
+    MerchantBalanceId int64 `json:"merchantBalanceId, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    OrderType string `json:"orderType, optional"`
+    TransactionType string `json:"transactionType, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantFrozenRecordQueryAllResponse {
+    List []MerchantFrozenRecord `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group:      merchantfrozenrecord
+    prefix:     api/v1/merchant
+)
+service boadmin-api {
+
+    @handler MerchantFrozenRecordQueryAllHandler
+    post /merchantfrozenrecord/query_all (MerchantFrozenRecordQueryAllRequest) returns (MerchantFrozenRecordQueryAllResponse)
+}

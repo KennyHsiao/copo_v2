@@ -1,0 +1,49 @@
+type AnnouncementTemp {
+    ID int64 `json:"id"`
+    Code string `json:"code"`
+    Name string `json:"name"`
+}
+
+type AnnouncementTempParam {
+    ID int64 `json:"id"`
+    TemplateCode string `json:"templateCode"`
+    ParamKey string `json:"paramKey"`
+    Name string `json:"name"`
+    ParamValue string `json:"paramValue"`
+    Language string `json:"language"`
+}
+
+type AnnouncementTempQueryAllRequest {
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type AnnouncementTempQueryAllResponse {
+    List []AnnouncementTemp `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type AnnouncementTempParamQueryAllRequest {
+    TemplateCode string `json:"templateCode, optional"`
+    Language string `json:"language, optional"`
+}
+
+type AnnouncementTempParamQueryAllResponse {
+    List []AnnouncementTempParam `json:"list"`
+}
+
+
+@server(
+    jwt: Auth
+    group: announcementTemp
+    prefix: api/v1/announcement
+)
+service boadmin-api {
+    @handler AnnouncementTempQueryAllHandler
+    post /temp/query_all(AnnouncementTempQueryAllRequest) returns (AnnouncementTempQueryAllResponse)
+
+    @handler AnnouncementTempParamQueryAllAllHandler
+    post /tempParam/query_all(AnnouncementTempParamQueryAllRequest) returns (AnnouncementTempParamQueryAllResponse)
+}

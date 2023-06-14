@@ -1,0 +1,43 @@
+kind: pipeline
+name: copo_bo_api
+
+clone:
+  disable: true
+
+steps:
+  - name: docker
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/copo_v2
+        - git checkout -- .
+        - git checkout stage
+        - git pull origin stage
+        #- git checkout -- .
+#        - go get github.com/copo888/transaction_service/rpc/transaction@stage
+        - go mod tidy
+        - docker-compose down
+        - docker rmi -f $(docker images --filter="reference=boadmin_service" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/boadmin boadmin/boadmin.go
+        - docker build -t boadmin_service -f boadmin/Dockerfile .
+        - docker-compose up -d
+    when:
+      branch:
+        - stage
+      event:
+        - push
+trigger:
+  branch:
+    - stage
+  event:
+    - push
+   

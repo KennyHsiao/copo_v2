@@ -1,0 +1,53 @@
+syntax = "v1"
+
+info(
+    title: "後臺行為紀錄"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type UserLog {
+    ID int64 `json:"id" valiate:"required"`
+    AccountName string `json:"accountName" valiate:"required"`
+    Type string `json:"type" valiate:"required"`
+    Operating string `json:"operating" valiate:"required"`
+    RequestParam string `json:"requestParam,optional"`
+    RequestUrl string `json:"requestUrl" valiate:"required"`
+    RequestApi string `json:"requestApi" valiate:"required"`
+    RequestUnit string `json:"requestUnit, optional"`
+    Device string `json:"device,optional"`
+    UserAgent string `json:"userAgent, optional"`
+    Ip string `json:"ip,optional"`
+    Method string `json:"method,optional"`
+    Location string `json:"location,optional"`
+}
+
+type UserLogQueryAllRequest {
+    Operating string `json:"operating, optional"`
+    AccountName string `json:"accountName, optional"`
+    RequestUnit string `json:"requestUnit, optional"`
+    Type string `json:"type,optional"`
+    StartAt string `json:"startAt" valiate: "required"`
+    EndAt string `json:"endAt" valiate: "required"`
+    PageNum int `json:"pageNum, optional"`
+    PageSize int `json:"pageSize, optional"`
+}
+
+type UserLogQueryAllResponse {
+    List []UserLog `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: userlog
+    prefix: api/v1/auth
+)
+service boadmin-api {
+    @handler UserLogQueryHandler
+    post /userlog/query_all (UserLogQueryAllRequest) returns (UserLogQueryAllResponse)
+}

@@ -1,0 +1,45 @@
+syntax = "v1"
+
+info(
+    title: "交易訂單操作紀錄歷程"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type OrderAction {
+    ID int64 `json:"id"`
+    OrderNo string `json:"orderNo"`
+    Action string `json:"action"`
+    UserAccount string `json:"userAccount"`
+    Comment string `json:"comment"`
+    CreatedAt string `json:"createdAt"`
+}
+
+type OrderActionQueryAllRequest {
+    OrderNo string `json:"orderNo, optional"`
+    UserAccount string `json:"userAccount, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type OrderActionQueryAllResponse {
+    List []OrderAction `json:"list"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: orderaction
+    prefix: api/v1/transaction
+)
+service boadmin-api {
+
+    @handler OrderActionQueryAllHandler
+    post /orderaction/query_all (OrderActionQueryAllRequest) returns (OrderActionQueryAllResponse)
+}

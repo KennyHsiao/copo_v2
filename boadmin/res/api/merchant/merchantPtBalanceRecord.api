@@ -1,0 +1,62 @@
+syntax = "v1"
+
+info(
+    title: "商戶子錢包餘額紀錄"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type MerchantPtBalanceRecord {
+    ID int64 `json:"id, optional"`
+    MerchantPtBalanceId int64 `json:"merchantPtBalanceId"`
+    MerchantCode string `json:"merchantCode, optional"`
+    OrderType string `json:"orderType"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    OrderNo string `json:"orderNo"`
+    MerchantOrderNo string `json:"merchantOrderNo"`
+    ChannelCode string `json:"channelCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    TransactionType string `json:"transactionType"`
+    BeforeBalance float64 `json:"beforeBalance"`
+    TransferAmount float64 `json:"transferAmount"`
+    AfterBalance float64 `json:"afterBalance"`
+    Comment string `json:"comment"`
+    CreatedBy string `json:"createdBy"`
+    CreatedAt string `json:"createdAt"`
+    PayTypeData PayType `json:"payTypeData, optional" gorm:"foreignKey:Code;references:PayTypeCode"`
+    ChannelData ChannelData `json:"channelData, optional" gorm:"foreignKey:Code;references:ChannelCode"`
+}
+
+// 分頁查詢
+type MerchantPtBalanceRecordQueryAllRequest {
+    MerchantBalanceId int64 `json:"merchantBalanceId, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    OrderType string `json:"orderType"`
+    OrderNo string `json:"orderNo, optional"`
+    TransactionType string `json:"transactionType, optional"`
+    PayTypeCode string `json:"payTypeCode, optional"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantPtBalanceRecordQueryAllResponse {
+    List []MerchantPtBalanceRecord `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: merchantPtBalanceRecord
+    prefix: api/v1/merchant
+)
+service boadmin-api {
+    @handler MerchantPtBalanceRecordQueryAllHandler
+    post /merchantPtBalanceRecord/query_all (MerchantPtBalanceRecordQueryAllRequest) returns (MerchantPtBalanceRecordQueryAllResponse)
+}

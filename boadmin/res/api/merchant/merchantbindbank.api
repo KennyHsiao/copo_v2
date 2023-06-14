@@ -1,0 +1,88 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type MerchantBindBank {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    CurrencyCode string `json:"currencyCode"`
+    Name string `json:"name"`
+    BankAccount string `json:"bankAccount"`
+    BankNo string `json:"bankNo"`
+    BankName string `json:"bankName"`
+    Province string `json:"province"`
+    City string `json:"city"`
+}
+
+// 新增
+type MerchantBindBankCreateRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode"`
+    Name string `json:"name"`
+    BankAccount string `json:"bankAccount"`
+    BankNo string `json:"bankNo"`
+    BankName string `json:"bankName"`
+    Province string `json:"province"`
+    City string `json:"city"`
+}
+// 更新
+type MerchantBindBankUpdateRequest {
+    ID int64 `json:"id"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    Name string `json:"name, optional"`
+    BankAccount string `json:"bankAccount, optional"`
+    BankNo string `json:"bankNo, optional"`
+    BankName string `json:"bankName, optional"`
+    Province string `json:"province, optional"`
+    City string `json:"city, optional"`
+}
+// 删除
+type MerchantBindBankDeleteRequest {
+    ID int64 `json:"id"`
+}
+// 查询
+type MerchantBindBankQueryRequest {
+    ID int64 `json:"id"`
+}
+type MerchantBindBankQueryResponse {
+    MerchantBindBank
+}
+type MerchantBindBankQueryAllRequest {
+    CurrencyCode string `json:"currencyCode, optional"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+}
+type MerchantBindBankQueryAllResponse {
+    List []MerchantBindBank `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: merchantbindbank
+    prefix: api/v1/merchant
+)
+service boadmin-api {
+    @handler MerchantBindBankCreateHandler
+    post /merchantbindbank/create (MerchantBindBankCreateRequest)
+
+    @handler MerchantBindBankUpdateHandler
+    post /merchantbindbank/update (MerchantBindBankUpdateRequest)
+
+    @handler MerchantBindBankDeleteHandler
+    post /merchantbindbank/delete (MerchantBindBankDeleteRequest)
+
+    @handler MerchantBindBankQueryHandler
+    post /merchantbindbank/query (MerchantBindBankQueryRequest) returns (MerchantBindBankQueryResponse)
+
+    @handler MerchantBindBankQueryAllHandler
+    post /merchantbindbank/query_all (MerchantBindBankQueryAllRequest) returns (MerchantBindBankQueryAllResponse)
+}

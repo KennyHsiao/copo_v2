@@ -1,0 +1,69 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+
+type MerchantReportQueryRequest struct {
+    MerchantCode    string `json:"merchantCode,optional"`
+    ChannelCode     string `json:"channelCode,optional"`
+    ChannelName     string `json:"channelName,optional"`
+    StartAt         string `json:"startAt,optional"`
+    EndAt           string `json:"endAt,optional"`
+    TransactionType string `json:"transactionType,optional"` //全部/內充/代付/支付/下發
+    CurrencyCode    string `json:"currencyCode"`
+    GroupType       string `json:"groupType,optional"`
+    PageNum         int    `json:"pageNum,optional" gorm:"-"` //gorm:"-" 忽略這參數檢查是否有給
+    PageSize        int    `json:"pageSize,optional" gorm:"-"`
+}
+
+type InternalMerchantReport {
+    MerchantCode string `json:"merchantCode"`
+    ChannelCode string `json:"channelCode"`
+    ChannelName string `json:"channelName"`
+    TransactionType string `json:"transactionType"`
+    PayTypeName string `json:"payTypeName"`
+    OrderAmount float64 `json:"orderAmount"`
+    OrderQuantity float64 `json:"orderQuantity"`
+    SuccessAmount float64 `json:"successAmount"`
+    SuccessQuantity float64 `json:"successQuantity"`
+    SuccessRate float64 `json:"successRate"`
+    MerchantFee float64 `json:"merchantFee"`                 //商戶費率
+    MerchantHandlingFee float64 `json:"merchantHandlingFee"` //商戶手續費
+    ChannelFee float64 `json:"channelFee"`                   //渠道費率
+    ChannelHandlingFee float64 `json:"channelHandlingFee"`   //渠道手續費
+    SystemCost float64 `json:"systemCost"`
+    SystemProfit float64 `json:"systemProfit"`
+    CurrencyCode string `json:"currencyCode"`
+}
+
+type MerchantReportQueryResponse {
+    List [] InternalMerchantReport `json:"list" gorm:"-"`
+    TotalOrderAmount float64 `json:"totalOrderAmount"`
+    TotalOrderQuantity float64 `json:"totalOrderQuantity"`
+    TotalSuccessAmount float64 `json:"totalSuccessAmount"`
+    TotalSuccessQuantity float64 `json:"totalSuccessQuantity"`
+    TotalCost float64 `json:"totalCost"`
+    TotalProfit float64 `json:"totalProfit"`
+    PageNum int `json:"pageNum" gorm:"-"`
+    PageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount" gorm:"-"`
+}
+
+@server(
+    jwt: Auth
+    group: report
+    prefix: api/v1/report
+)
+service boadmin-api {
+    @handler MerchantReportQueryHandler
+    post /merchantreport/query (MerchantReportQueryRequest) returns (MerchantReportQueryResponse)
+
+    @handler MerchantReportQueryExcelHandler
+    post /merchantreport/excel (MerchantReportQueryRequest) returns ()
+}

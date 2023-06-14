@@ -1,0 +1,89 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "Allen"
+    email: "allen@e-pay.vip"
+    version: "type version here"
+)
+
+type Currency {
+    ID int64 `json:"id, optional"`
+    Code string `json:"code, optional"`
+    Name string `json:"name, optional"`
+    SortOrder int64 `json:"sortOrder, optional"`
+}
+
+// 新增
+type CurrencyCreateRequest {
+    Code string `json:"code" valiate:"required,lte=4"`
+    Name string `json:"name" valiate:"required,lte=16"`
+    SortOrder int64 `json:"sortOrder, optional"`
+}
+
+// 修改
+type CurrencyUpdateRequest {
+    ID int64 `json:"id"`
+    Code string `json:"code" valiate:"required,lte=4"`
+    Name string `json:"name" valiate:"required,lte=16"`
+    SortOrder int64 `json:"sortOrder, optional"`
+}
+
+// 刪除
+type CurrencyDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+// 查詢
+type CurrencyQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type CurrencyQueryResponse {
+    Currency
+}
+
+type CurrencyQueryAllRequest {
+    Code string `json:"code, optional"`
+    Name string `json:"name, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type CurrencyQueryAllResponse {
+    List []Currency `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type CurrencyBatchSortRequest {
+    List []int64 `json:"list"`
+}
+
+@server(
+    jwt: Auth
+    group:      currency
+    prefix:     api/v1/basic
+)
+service boadmin-api {
+
+    @handler CurrencyCreateHandler
+    post /currency/create (CurrencyCreateRequest)
+
+    @handler CurrencyUpdateHandler
+    post /currency/update (CurrencyUpdateRequest)
+
+    @handler CurrencyDeleteHandler
+    post /currency/delete (CurrencyDeleteRequest)
+
+    @handler CurrencyQueryHandler
+    post /currency/query (CurrencyQueryRequest) returns (CurrencyQueryResponse)
+
+    @handler CurrencyQueryAllHandler
+    post /currency/query_all (CurrencyQueryAllRequest) returns (CurrencyQueryAllResponse)
+
+    @handler CurrencyBatchSortHandler
+    post /currency/batch_sort (CurrencyBatchSortRequest)
+}

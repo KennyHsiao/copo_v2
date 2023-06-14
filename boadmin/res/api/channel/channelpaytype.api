@@ -1,0 +1,225 @@
+syntax = "v1"
+
+info(
+    title: "渠道支付類型"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type ChannelPayType {
+    ID int64 `json:"id, optional"`
+    Code string `json:"code, optional"`
+    ChannelCode string `json:"channelCode, optional"`
+    PayTypeCode string `json:"payTypeCode, optional"`
+    Fee float64 `json:"fee, optional"`
+    HandlingFee float64 `json:"handlingFee, optional"`
+    MaxInternalCharge float64 `json:"maxInternalCharge, optional"`
+    DailyTxLimit float64 `json:"dailyTxLimit, optional"`
+    SingleMinCharge float64 `json:"singleMinCharge, optional"`
+    SingleMaxCharge float64 `json:"singleMaxCharge, optional"`
+    FixedAmount string `json:"fixedAmount, optional"`
+    BillDate int64 `json:"billDate, optional"`
+    Status string `json:"status, optional"`
+    IsProxy string `json:"isProxy, optional"`
+    IsRate string `json:"isRate, optional"`
+    Device string `json:"device, optional"`
+    MapCode string `json:"mapCode, optional"`
+}
+
+type ChannelPayTypeCreateRequest {
+    Code string `json:"code" valiate: "required"`
+    ChannelCode string `json:"channelCode" valiate: "required"`
+    PayTypeCode string `json:"payTypeCode" valiate: "required"`
+    Fee float64 `json:"fee, optional"`
+    HandlingFee float64 `json:"handlingFee, optional"`
+    MaxInternalCharge float64 `json:"maxInternalCharge, optional"`
+    DailyTxLimit float64 `json:"dailyTxLimit, optional"`
+    SingleMinCharge float64 `json:"singleMinCharge, optional"`
+    SingleMaxCharge float64 `json:"singleMaxCharge, optional"`
+    FixedAmount string `json:"fixedAmount, optional"`
+    BillDate int64 `json:"billDate, optional"`
+    Status string `json:"status" valiate: "required"`
+    IsProxy string `json:"isProxy, optional"`
+    IsRate string `json:"isRate" valiate: "required"`
+    Device string `json:"device, optional"`
+    MapCode string `json:"mapCode, optional"`
+}
+
+type ChannelPayTypeUpdateRequest {
+    ID int64 `json:"id, optional"`
+    Code string `json:"code" valiate: "required"`
+    ChannelCode string `json:"channelCode" valiate: "required"`
+    PayTypeCode string `json:"payTypeCode" valiate: "required"`
+    Fee float64 `json:"fee, optional"`
+    HandlingFee float64 `json:"handlingFee, optional"`
+    MaxInternalCharge float64 `json:"maxInternalCharge, optional"`
+    DailyTxLimit float64 `json:"dailyTxLimit, optional"`
+    SingleMinCharge float64 `json:"singleMinCharge, optional"`
+    SingleMaxCharge float64 `json:"singleMaxCharge, optional"`
+    FixedAmount string `json:"fixedAmount, optional"`
+    BillDate int64 `json:"billDate, optional"`
+    Status string `json:"status" valiate: "required"`
+    IsProxy string `json:"isProxy, optional"`
+    IsRate string `json:"isRate" valiate: "required"`
+    Device string `json:"device, optional"`
+    MapCode string `json:"mapCode, optional"`
+}
+
+type ChannelPayTypeQueryAllRequest {
+    ChannelCode string `json:"channelCode,optional"`
+    ChannelName string `json:"channelName,optional"`
+    PayTypeName string `json:"payTypeName,optional"`
+    Status string `json:"status,optional"`
+    IsProxy string `json:"isProxy,optional"`
+    Currency string `json:"currency,optional"`
+    PageNum int `json:"pageNum" gorm:"-"` //gorm:"-" 忽略這參數檢查是否有給
+    PageSize int `json:"pageSize" gorm:"-"`
+}
+
+type ChannelPayTypeQueryAllResponse {
+    List []ChannelPayTypeQueryResponse `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type ChannelPayTypeQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type ChannelPayTypeQueryResponse {
+    ChannelPayType
+    CurrencyCode string `json:"currencyCode"`
+    PayTypeName string `json:"payTypeName"`
+    ChannelName string `json:"channelName"`
+}
+
+type ChannelPayTypeDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+type MerchantRateQueryRequest {
+    ChannelPayTypeCode string `json:"channelPayTypeCode" valiate: "required"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantRateQueryResponse {
+    list []MerConfigureRate `json:"list"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type MerchantRateUpdateRequest {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+    ChannelCode string `json:"channelCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    Designation string `json:"designation"`
+    DesignationNo string `json:"designationNo, optional"`
+    Fee float64 `json:"fee"`
+    HandlingFee float64 `json:"handlingFee"`
+    Status string `json:"status, optional"`
+}
+
+type MerConfigureRate {
+    //    IsConfigure bool `json:"isConfigure"`
+    //    ChnName string `json:"chnName"`
+    ChannelCode string `json:"channelCode"`
+    //    ChnIsNzPre string `json:"chnIsNzPre"`
+    //    ChnIsProxy string `json:"chnIsProxy"`
+    //    ChnStatus string `json:"chnStatus"`
+    CurrencyCode string `json:"currencyCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    ChnPayTypeCode string `json:"chnPayTypeCode"`
+    PayTypeFee float64 `json:"payTypeFee"`
+    PayTypeHandlingFee float64 `json:"payTypeHandlingFee"`
+    //    ChnPayTypeMaxInternalCharge float64 `json:"chnPayTypeMaxInternalCharge"`
+    //    ChnPayTypeDailyTxLimit float64 `json:"chnPayTypeDailyTxLimit"`
+    ChnPayTypeSingleMinCharge float64 `json:"chnPayTypeSingleMinCharge"`
+    //    ChnPayTypeSingleMaxCharge float64 `json:"chnPayTypeSingleMaxCharge"`
+    //    ChnPayTypeBillDate int `json:"chnPayTypeBillDate"`
+    //    ChnPayTypeStatus string `json:"chnPayTypeStatus"`
+    MerCode string `json:"merCode"`
+    MerBillLadingType string `json:"merBillLadingType"`
+    //    MerStatus string `json:"merStatus"`
+    MerChnRateId int64 `json:"merChnRateId"`
+    MerChnRateFee float64 `json:"merChnRateFee"`
+    MerChnRateHandlingFee float64 `json:"merChnRateHandlingFee"`
+    MerChnRateDesignation string `json:"merChnRateDesignation"`
+    MerChnRateDesignationNo string `json:"merChnRateDesignationNo"`
+    //    MerChnRateStatus string `json:"merChnRateStatus"`
+    //    ParentMerCode string `json:"parentMerCode"`
+    //    ParentMerChnRateStatus string `json:"parentMerChnRateStatus"`
+}
+
+type ChannelPayTypeQueryAmount {
+    ChannelName string `json:"channelName"`
+    PayTypeName string `json:"payTypeName"`
+    IsProxy string `json:"isProxy"`
+    Fee float64 `json:"fee"`
+    HandlingFee float64 `json:"handlingFee"`
+    SingleMinCharge float64 `json:"singleMinCharge"`
+    SingleMaxCharge float64 `json:"singleMaxCharge"`
+    Status string `json:"status"`
+    Id int64 `json:"id"`
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+    CurrencyCode string `json:"currencyCode"`
+    Amount float64 `json:"amount"`
+
+}
+
+type ChannelPayTypeQueryAmountRequest {
+    ChannelCode string `json:"channelCode, optional"`
+    ChannelName string `json:"channelName, optional"`
+    PayTypeCode string `json:"payTypeCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    IsProxy string `json:"isProxy, optional"`
+    Status string `json:"status, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    PageNum  int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type ChannelPayTypeQueryAmountResponse {
+    list []ChannelPayTypeQueryAmount `json:"list"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: channelpaytype
+    prefix: api/v1/channel
+)
+service boadmin-api {
+    @handler ChannelPayTypeCreateHandler
+    post /channelpaytype/create (ChannelPayTypeCreateRequest)
+
+    @handler ChannelPayTypeUpdateHandler
+    post /channelpaytype/update (ChannelPayTypeUpdateRequest)
+
+    @handler ChannelPayTypeDeleteHandler
+    post /channelpaytype/delete (ChannelPayTypeDeleteRequest)
+
+    @handler ChannelPayTypeQueryHandler
+    post /channelpaytype/query (ChannelPayTypeQueryRequest) returns (ChannelPayTypeQueryResponse)
+
+    @handler ChannelPayTypeQueryAllHandler
+    post /channelpaytype/query_all (ChannelPayTypeQueryAllRequest) returns (ChannelPayTypeQueryAllResponse)
+
+    @handler ChannelPayTypeMerchantRateQuery
+    post /channelpaytype/merchantrate_query (MerchantRateQueryRequest) returns (MerchantRateQueryResponse)
+
+    @handler ChannelPayTypeMerRateUpdate
+    post /channelpaytype/merchantrate_update (MerchantRateUpdateRequest)
+
+    @handler ChannelPayTypeQueryAmountHandler
+    post /channelpaytype/query_amount (ChannelPayTypeQueryAmountRequest) returns (ChannelPayTypeQueryAmountResponse)
+}

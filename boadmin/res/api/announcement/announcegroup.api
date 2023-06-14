@@ -1,0 +1,38 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+
+type GroupQueryRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    GroupName string `json:"groupName, optional"`
+    GroupId string `json:"groupId, optional"`
+    CommunicationSoftware string `json:"communicationSoftware, optional"`
+    PageSize     int `json:"pageSize, optional" gorm:"-"`
+    PageNum      int `json:"pageNum, optional" gorm:"-"`
+}
+
+type GroupQueryResponse {
+    MerchantCode string `json:"merchantCode"`
+    GroupName string `json:"groupName"`
+    CommunicationNickname string `json:"communicationNickname"`
+    communicationSoftware string `json:"communicationSoftware"`
+    GroupId string `json:"groupId"`
+}
+
+@server(
+    jwt: Auth
+    group: announcementGroup
+    prefix: api/v1/announcement
+)
+service boadmin-api {
+    @handler GroupQueryHandler
+    post /group/query_all(GroupQueryRequest) returns (GroupQueryResponse)
+
+}

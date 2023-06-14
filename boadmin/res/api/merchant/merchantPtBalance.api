@@ -1,0 +1,111 @@
+syntax = "v1"
+
+info(
+    title: "商戶子錢包"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type MerchantPtBalance {
+    ID int64 `json:"id, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    Name string `json:"name, optional"`
+    Balance float64 `json:"balance, optional"`
+    Remark string `json:"remark, optional"`
+}
+
+// 異動錢包金額
+type MerchantPtBalanceUpdateRequest {
+    MerchantCode string `json:"merchantCode"`
+    CurrencyCode string `json:"currencyCode"`
+    Name string `json:"name"`
+    Amount float64 `json:"amount"`
+    BalanceType string `json:"balanceType, optional"`
+    Comment string `json:"comment, optional"`
+}
+
+// 分頁查詢
+type MerchantPtBalanceQueryAllRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    Name string `json:"name, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantPtBalanceQueryData {
+    ID int64 `json:"id, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    Name string `json:"name, optional"`
+    Balance float64 `json:"balance, optional"`
+    Remark string `json:"remark, optional"`
+}
+
+type MerchantPtBalanceQueryAllResponse {
+    List []MerchantPtBalanceQueryData `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type MerchantPtEnableRequest {
+    MerchantCode string `json:"merchantCode"`
+    CurrencyCode string `json:"currencyCode"`
+    MerchantPtBalances []MerchantPtBalance `json:"merchantPtBalances"`
+    MerchantPtChannels []MerchantPtChannel `json:"merchantPtChannels"`
+}
+
+type MerchantPtDisableRequest {
+    MerchantCode string `json:"merchantCode"`
+    CurrencyCode string `json:"currencyCode"`
+}
+
+type MerchantPtChannel {
+    ID int64 `json:"id"`
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+    PtBalanceName string `json:"ptBalanceName"`
+}
+
+type MerchantPtBalanceRenameRequest {
+    ID int64 `json:"id, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    Name string `json:"name, optional"`
+    Remark string `json:"remark, optional"`
+}
+
+type MerchantPtBalanceCreateRequest {
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    Name string `json:"name, optional"`
+    Remark string `json:"remark, optional"`
+}
+
+@server(
+    jwt: Auth
+    group: merchantPtBalance
+    prefix: api/v1/merchant
+)
+service boadmin-api {
+    @handler MerchantPtBalanceRenameHandler
+    post /merchantPtBalance/rename (MerchantPtBalanceRenameRequest)
+
+    @handler MerchantPtBalanceCreateHandler
+    post /merchantPtBalance/create (MerchantPtBalanceCreateRequest)
+
+    @handler MerchantPtBalanceUpdateHandler
+    post /merchantPtBalance/update_balance (MerchantPtBalanceUpdateRequest)
+
+    @handler MerchantPtBalanceQueryAllHandler
+    post /merchantPtBalance/query_all (MerchantPtBalanceQueryAllRequest) returns (MerchantPtBalanceQueryAllResponse)
+
+    @handler MerchantPtBalanceEnableHandler
+    post /merchantPtBalance/enable (MerchantPtEnableRequest) returns ()
+
+    @handler MerchantPtBalanceDisableHandler
+    post /merchantPtBalance/disable (MerchantPtDisableRequest) returns ()
+}

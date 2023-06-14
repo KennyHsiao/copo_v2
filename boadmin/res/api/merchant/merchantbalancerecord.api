@@ -1,0 +1,64 @@
+syntax = "v1"
+
+info(
+    title: "商戶餘額紀錄"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type MerchantBalanceRecord {
+    ID int64 `json:"id, optional"`
+    MerchantBalanceId int64 `json:"merchantBalanceId"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    OrderNo string `json:"orderNo"`
+    MerchantOrderNo string `json:"merchantOrderNo"`
+    OrderType string `json:"orderType"`
+    ChannelCode string `json:"channelCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    TransactionType string `json:"transactionType"`
+    BalanceType string `json:"balanceType, optional"`
+    BeforeBalance float64 `json:"beforeBalance"`
+    TransferAmount float64 `json:"transferAmount"`
+    AfterBalance float64 `json:"afterBalance"`
+    Comment string `json:"comment"`
+    CreatedBy string `json:"createdBy"`
+    CreatedAt string `json:"createdAt"`
+    PayTypeData PayType `json:"payTypeData, optional" gorm:"foreignKey:Code;references:PayTypeCode"`
+    ChannelData ChannelData `json:"channelData, optional" gorm:"foreignKey:Code;references:ChannelCode"`
+}
+
+// 分頁查詢
+type MerchantBalanceRecordQueryAllRequest {
+    MerchantBalanceId int64 `json:"merchantBalanceId, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    OrderNo string `json:"orderNo, optional"`
+    OrderType string `json:"orderType, optional"`
+    TransactionType string `json:"transactionType, optional"`
+    BalanceType string `json:"balanceType, optional"`
+    PayTypeCode string `json:"payTypeCode, optional"`
+    StartAt string `json:"startAt"`
+    EndAt string `json:"endAt"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantBalanceRecordQueryAllResponse {
+    List []MerchantBalanceRecord `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    jwt: Auth
+    group: merchantbalancerecord
+    prefix: api/v1/merchant
+)
+service boadmin-api {
+    @handler MerchantBalanceRecordQueryAllHandler
+    post /merchantbalancerecord/query_all (MerchantBalanceRecordQueryAllRequest) returns (MerchantBalanceRecordQueryAllResponse)
+}

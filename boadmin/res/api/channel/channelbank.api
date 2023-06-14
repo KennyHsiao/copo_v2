@@ -1,0 +1,77 @@
+syntax = "v1"
+
+info(
+	title: "渠道銀行資料"
+	desc: "type desc here"
+	author: "type author here"
+	email: "type email here"
+	version: "type version here"
+)
+
+type ChannelBank{
+	ID int64 `json:"id, optional"`
+	ChannelCode string `json:"channelCode, optional"`
+	BankNo string `json:"bankNo, optional"`
+	MapCode string `json:"mapCode, optional"`
+}
+
+type ChannelBankCreateRequest{
+	ChannelCode string `json:"channelCode, optional"`
+	BankNo string `json:"bankNo" valiate: "required"`
+	MapCode string `json:"mapCode"`
+}
+
+type ChannelBankUpdateRequest{
+	ID int64 `json:"id, optional"`
+	ChannelCode string `json:"channelCode" valiate: "required"`
+	BankNo string `json:"bankNo" valiate: "required"`
+	MapCode string `json:"mapCode"`
+}
+
+type ChannelBankDeleteRequest{
+	ID int64 `json:"id"`
+}
+
+type ChannelBankQueryRequest{
+	ID int64 `json:"id"`
+	ChannelCode string `json:"channelCode"`
+	BankNo string `json:"bankNo"`
+}
+
+type ChannelBankQueryResponse{
+	ChannelBank ChannelBank `json:"channelBank"`
+}
+
+type ChannelBankQueryAllRequest{
+	ID int64 `json:"id"`
+	ChannelCode string `json:"channelCode"`
+	BankNo string `json:"bankNo"`
+}
+
+type ChannelBankQueryAllResponse{
+	ChannelBankList []ChannelBank `json:"channelBankList"`
+}
+
+@server(
+	jwt: Auth
+	group: channelbank
+	prefix: api/v1/channel
+)
+
+service boadmin-api {
+	@handler ChannelBankCreateHandler
+	post /channelbank/create (ChannelBankCreateRequest)
+
+	@handler ChannelBankUpdateHandler
+	post /channelbank/update (ChannelBankUpdateRequest)
+
+	@handler ChannelBankDeleteHandler
+	post /channelbank/delete (ChannelBankDeleteRequest)
+
+	@handler ChannelBankQueryHandler
+	post /channelbank/query (ChannelBankQueryRequest) returns (ChannelBankQueryResponse)
+
+	@handler ChannelBankQueryAllHandler
+	post /channelbank/query_all (ChannelBankQueryAllRequest) returns (ChannelBankQueryAllResponse)
+}
+

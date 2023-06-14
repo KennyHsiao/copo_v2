@@ -1,0 +1,51 @@
+syntax = "v1"
+
+info(
+    title: "渠道餘額資料"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type ChannelBalanceRecord {
+    ID int64 `json:"id"`
+    Code string `json:"code"`
+    Time string `json:"time"`
+    CurrencyCode string `json:"currencyCode"`
+    Balance float64 `json:"balance"`
+    IsSuccess string `json:"isSuccess"`
+}
+
+type ChannelBalanceRecordQueryAllRequest {
+    Code string `json:"code, optional"`
+    Name string `json:"name, optional"`
+    Time string `json:"time, optional"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    IsSuccess string `json:"isSuccess, optional"`
+    StartAt string `json:"startAt, optional"`
+    EndAt string `json:"endAt, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type ChannelBalanceRecordQueryAllResponse {
+    List []ChannelBalanceRecord `json:"list"`
+    PageNum int `json:"pageNum"`
+    PageSize int `json:"pageSize"`
+    RowCount int64 `json:"rowCount"`
+}
+
+@server(
+    group: channelBalanceRecord
+    prefix: api/v1/channel
+)
+
+service boadmin-api {
+
+    @handler channelBalanceRecordScheduleCreateHandler
+    post /channelBalanceRecord/schedule_create ()
+
+    @handler channelBalanceRecordScheduleQueryAllHandler
+    post /channelBalanceRecord/query_all (ChannelBalanceRecordQueryAllRequest) returns (ChannelBalanceRecordQueryAllResponse)
+}

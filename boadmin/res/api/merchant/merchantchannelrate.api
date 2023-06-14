@@ -1,0 +1,222 @@
+syntax = "v1"
+
+info(
+    title: "商戶渠道費率"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type MerchantChannelRate {
+    ID int64 `json:"id"`
+    MerchantCode string `json:"merchantCode"`
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+    ChannelCode string `json:"channelCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    Designation string `json:"designation"`
+    DesignationNo string `json:"designationNo, optional"`
+    Fee float64 `json:"fee"`
+    HandlingFee float64 `json:"handlingFee"`
+    MerchantPtBalanceId int64 `json:"merchantPtBalanceId"`
+    Status string `json:"status"`
+}
+
+type MerchantChannelRateConfigureRequest {
+    ID int64 `json:"id, optional"`
+    MerchantCode string `json:"merchantCode"`
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+    ChannelCode string `json:"channelCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    Designation string `json:"designation"`
+    DesignationNo string `json:"designationNo, optional"`
+    Fee float64 `json:"fee"`
+    HandlingFee float64 `json:"handlingFee"`
+    CurrencyCode string `json:"currencyCode, optional"`
+    MerchantPtBalanceId int64 `json:"merchantPtBalanceId, optional"`
+    Status string `json:"status, optional"`
+}
+
+// 商戶列表 配置渠道支付
+type MerchantConfigureRate {
+    IsConfigure bool `json:"isConfigure"`
+    ChnName string `json:"chnName"`
+    ChnCode string `json:"chnCode"`
+    ChnIsNzPre string `json:"chnIsNzPre"`
+    ChnIsProxy string `json:"chnIsProxy"`
+    ChnStatus string `json:"chnStatus"`
+    CurrencyCode string `json:"currencyCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    PayTypeName string `json:"PayTypeName"`
+    ChnPayTypeCode string `json:"chnPayTypeCode"`
+    PayTypeFee float64 `json:"payTypeFee"`
+    PayTypeHandlingFee float64 `json:"payTypeHandlingFee"`
+    ChnPayTypeMaxInternalCharge float64 `json:"chnPayTypeMaxInternalCharge"`
+    ChnPayTypeDailyTxLimit float64 `json:"chnPayTypeDailyTxLimit"`
+    ChnPayTypeSingleMinCharge float64 `json:"chnPayTypeSingleMinCharge"`
+    ChnPayTypeSingleMaxCharge float64 `json:"chnPayTypeSingleMaxCharge"`
+    ChnPayTypeBillDate int `json:"chnPayTypeBillDate"`
+    ChnPayTypeStatus string `json:"chnPayTypeStatus"`
+    MerCode string `json:"merCode"`
+    MerBillLadingType string `json:"merBillLadingType"`
+    MerStatus string `json:"merStatus"`
+    MerChnRateId int64 `json:"merChnRateId"`
+    MerChnRateFee float64 `json:"merChnRateFee"`
+    MerChnRateHandlingFee float64 `json:"merChnRateHandlingFee"`
+    MerChnRateDesignation string `json:"merChnRateDesignation"`
+    MerChnRateDesignationNo string `json:"merChnRateDesignationNo"`
+    MerChnRateStatus string `json:"merChnRateStatus"`
+    MerchantPtBalanceId int64 `json:"merchantPtBalanceId"`
+    MerchantPtBalanceName string `json:"merchantPtBalanceName"`
+    ParentMerCode string `json:"parentMerCode"`
+    ParentMerChnRateStatus string `json:"parentMerChnRateStatus"`
+}
+
+type MerchantConfigureRateListRequest {
+    CurrencyCode string `json:"currencyCode, optional"`
+    MerchantCode string `json:"merchantCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    ChannelCode string `json:"channelCode, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantConfigureRateListResponse {
+    List []MerchantConfigureRate `json:"list"`
+}
+
+// 商戶費率列表
+type MerchantRateListView {
+    ChnName string `json:"chnName"`
+    ChnCode string `json:"chnCode"`
+    CurrencyCode string `json:"currencyCode"`
+    CurrencyName string `json:"currencyName"`
+    ChnStatus string `json:"chnStatus"`
+    PayTypeCode string `json:"payTypeCode"`
+    PayTypeName string `json:"payTypeName"`
+    ChnPayTypeCode string `json:"chnPayTypeCode"`
+    ChnPayTypeFee float64 `json:"chnPayTypeFee"`
+    ChnPayTypeHandlingFee float64 `json:"chnPayTypeHandlingFee"`
+    ChnPayTypeMaxInternalCharge float64 `json:"chnPayTypeMaxInternalCharge"`
+    ChnPayTypeDailyTxLimit float64 `json:"chnPayTypeDailyTxLimit"`
+    ChnPayTypeSingleMinCharge float64 `json:"chnPayTypeSingleMinCharge"`
+    ChnPayTypeSingleMaxCharge float64 `json:"chnPayTypeSingleMaxCharge"`
+    ChnPayTypeBillDate int `json:"chnPayTypeBillDate"`
+    ChnPayTypeStatus string `json:"chnPayTypeStatus"`
+    MerCode string `json:"merCode"`
+    MerStatus string `json:"merStatus"`
+    MerChnRateFee float64 `json:"merChnRateFee"`
+    MerChnRateHandlingFee float64 `json:"merChnRateHandlingFee"`
+    MerChnRateDesignation string `json:"merChnRateDesignation"`
+    MerChnRateStatus string `json:"merChnRateStatus"`
+    ParentMerCode string `json:"parentMerCode"`
+    ParentMerChnRateFee float64 `json:"parentMerChnRateFee"`
+    ParentMerChnRateHandlingFee float64 `json:"parentMerChnRateHandlingFee"`
+    ParentMerChnRateStatus string `json:"parentMerChnRateStatus"`
+}
+
+// 商戶訂單費率列表
+type MerchantOrderRateListView {
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+    PayTypeCode string `json:"payTypeCode"`
+    MerHandlingFee float64 `json:"merHandlingFee"`
+    MerFee float64 `json:"merFee"`
+    Designation string `json:"designation"`
+    DesignationNo string `json:"designationNo"`
+    ChannelCode string `json:"channelCode"`
+    ChannelName string `json:"channelName"`
+    CurrencyCode string `json:"currencyCode"`
+    MaxInternalCharge float64 `json:"maxInternalCharge"`
+    SingleMinCharge float64 `json:"singleMinCharge"`
+    SingleMaxCharge float64 `json:"singleMaxCharge"`
+    MerchantCode string `json:"merchantCode"`
+    MerchnrateStatus string `json:"merchnrateStatus"`
+    ChnStatus string `json:"chnStatus"`
+    ChnIsProxy string `json:"chnIsProxy"`
+    CptStatus string `json:"chnpayTypeStatus"`
+    CptFee float64 `json:"cptFee"`
+    CptHandlingFee float64 `json:"cptHandlingFee"`
+    ApiUrl string `json:"apiUrl"`
+    ChannelPort string `json:"channelPort"`
+    CptIsRate string `json:"cptIsRate"`
+    Device string `json:"device"`
+    FixedAmount string `json:"fixedAmount"`
+    PayTypeName string `json:"payTypeName"`
+    PayTypeImgUrl string `json:"payTypeImgUrl"`
+    PtBalanceId int64 `json:"ptBalanceId"`
+}
+
+type MerchantQueryRateListViewRequest {
+    CurrencyCode string `json:"currencyCode, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+    ParentMerchantCode string `json:"parentMerchantCode, optional"`
+    PayTypeCode string `json:"payTypeCode, optional"`
+    PayTypeName string `json:"payTypeName, optional"`
+    ChannelName string `json:"channelName, optional"`
+    ChannelPayTypeCode string `json:"channelPayTypeCode, optional"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type MerchantQueryRateListViewResponse {
+    List []MerchantRateListView `json:"list"`
+    PageNum int `json:"pageNum, optional" gorm:"-"`
+    PageSize int `json:"pageSize, optional" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type MerchantRateGetCodeDropDownListRequest {
+    CurrencyCode string `json:"currencyCode, optional"`
+}
+
+type MerchantRateGetParentCodeDropDownListRequest {
+    CurrencyCode string `json:"currencyCode, optional"`
+}
+
+type MerchantRatePayTypeListRequest {
+    CurrencyCode string `json:"currencyCode, optional"`
+    MerchantCode string `json:"merchantCode, optional"`
+}
+
+type MerchantRatePayTypeListResponse {
+    List []RatePayType `json:"list"`
+}
+
+type RatePayType {
+    Code string `json:"code"`
+    Name string `json:"name"`
+}
+
+type MerchantRateResetRequest {
+    MerchantCode string `json:"merchantCode"`
+    ChannelPayTypesCode string `json:"channelPayTypesCode"`
+}
+
+
+@server(
+    jwt: Auth
+    group: merchantchannelrate
+    prefix: api/v1/merchant
+)
+service boadmin-api {
+    @handler MerchantChannelRateConfigureHandler
+    post /merchantchannelrate/configure (MerchantChannelRateConfigureRequest)
+
+    @handler MerchantQueryRateListViewHandler
+    post /merchantchannelrate/query_list_view (MerchantQueryRateListViewRequest) returns (MerchantQueryRateListViewResponse)
+
+    @handler MerchantGetCodeDropDownList
+    post /merchantchannelrate/get_code_drop_down_list (MerchantRateGetCodeDropDownListRequest) returns ([]string)
+
+    @handler MerchantGetParentCodeDropDownList
+    post /merchantchannelrate/get_parent_code_drop_down_list (MerchantRateGetParentCodeDropDownListRequest) returns ([]string)
+
+    @handler MerchantConfigureRateListHandler
+    post /merchantchannelrate/configure_list (MerchantConfigureRateListRequest) returns (MerchantConfigureRateListResponse)
+
+    @handler MerchantRatePayTypeListHandler
+    post /merchantchannelrate/pay_type_List (MerchantRatePayTypeListRequest) returns (MerchantRatePayTypeListResponse)
+
+    @handler MerchantRateResetHandler
+    post /merchantchannelrate/reset (MerchantRateResetRequest)
+}

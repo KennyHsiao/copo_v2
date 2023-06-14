@@ -1,0 +1,117 @@
+syntax = "v1"
+
+info(
+    title: "type title here"
+    desc: "type desc here"
+    author: "type author here"
+    email: "type email here"
+    version: "type version here"
+)
+
+type Bank{
+    ID int64 `json:"id"`
+    bankNo string `json:"bankNo"`
+    bankName string `json:"bankName"`
+    bankNameEn string `json:"bankNameEn"`
+    abbr string `json:"abbr"`
+    branchNo string `json:"branchNo"`
+    branchName string `json:"branchName"`
+    city string `json:"city"`
+    province string `json:"province"`
+    currencyCode string `json:"currencyCode"`
+    status string `json:"status"`
+    channelDatas []ChannelData `json:"channelDatas, optional" gorm:"many2many:ch_channel_banks:foreignKey:bankNo;joinForeignKey:bank_no;references:code;joinReferences:channel_code"`
+}
+
+//新增
+type BankCreateRequest {
+    bankNo string `json:"bankNo, optional"`
+    bankName string `json:"bankName, valiate: "required""`
+    bankNameEn string `json:"bankNameEn" valiate: "required"`
+    abbr string `json:"abbr" valiate: "required"`
+    branchNo string `json:"branchNo, optional "`
+    branchName string `json:"branchName, optional"`
+    city string `json:"city, optional"`
+    province string `json:"province, optional"`
+    currencyCode string `json:"currencyCode" valiate: "required"`
+    status string   `json:"status" valiate: "required"`
+    channelDatas []ChannelData `json:"channelDatas, optional" gorm:"many2many:ch_channel_banks:foreignKey:bankNo;joinForeignKey:bank_no;references:code;joinReferences:channel_code"`
+}
+
+//修改
+type BankUpdateRequest {
+    ID int64 `json:"id, optional"`
+    bankNo string `json:"bankNo" valiate: "required"`
+    bankName string `json:"bankName, optional"`
+    bankNameEn string `json:"bankNameEn, optional"`
+    abbr string `json:"abbr, optional"`
+    branchNo string `json:"branchNo, optional"`
+    branchName string `json:"branchName, optional"`
+    city string `json:"city, optional"`
+    province string `json:"province, optional"`
+    currencyCode string `json:"currencyCode" valiate: "required"`
+    status string   `json:"status" valiate: "required"`
+    channelDatas []ChannelData `json:"channelDatas, optional" gorm:"many2many:ch_channel_banks:foreignKey:bankNo;joinForeignKey:bank_no;references:code;joinReferences:channel_code"`
+}
+
+//删除
+type BankDeleteRequest {
+    ID int64 `json:"id"`
+}
+
+//查询
+type BankQueryRequest {
+    ID int64 `json:"id"`
+}
+
+type BankQueryResponse {
+    Bank
+}
+
+type BankQueryAllRequest {
+    currencyCode string `json:"currencyCode, optional"`
+    bankNo string `json:"bankNo, optional"`
+    bankName string `json:"bankName, optional"`
+    pageNum int `json:"pageNum, optional" gorm:"-"`
+    pageSize int `json:"pageSize, optional" gorm:"-"`
+}
+
+type BankQueryAllResponse {
+    List []Bank `json:"list"`
+    pageNum int `json:"pageNum" gorm:"-"`
+    pageSize int `json:"pageSize" gorm:"-"`
+    RowCount int64 `json:"rowCount"`
+}
+
+type BankQueryForBKRequest{
+    ChannelCode string `json:"channelCode"`
+}
+
+type BankQueryForBKResponse{
+    List []Bank `json:"list"`
+}
+
+@server(
+    jwt: Auth
+    group: banks
+    prefix: api/v1/bank
+)
+service boadmin-api {
+    @handler BankCreateHandler
+    post /banks/create (BankCreateRequest)
+
+    @handler BankUpdateHandler
+    post /banks/update (BankUpdateRequest)
+
+    @handler BankDeleteHandler
+    post /banks/delete (BankDeleteRequest)
+
+    @handler BankQueryHandler
+    post /banks/query (BankQueryRequest) returns (BankQueryResponse)
+
+    @handler BankQueryAllHandler
+    post /banks/queryall (BankQueryAllRequest) returns (BankQueryAllResponse)
+
+    @handler BankQueryForBKHandler
+    post /banks/query_for_bk (BankQueryForBKRequest) returns (BankQueryForBKResponse)
+}
